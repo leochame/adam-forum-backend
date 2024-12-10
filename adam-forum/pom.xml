@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.adam</groupId>
+    <artifactId>adam-forum</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>../forum-common</module>
+        <module>../forum-user</module>
+        <module>../forum-model</module>
+        <module>../forum-file</module>
+        <module>../forum-gateway</module>
+        <module>../forum-post</module>
+    </modules>
+
+    <properties>
+        <project.version>1.0-SNAPSHOT</project.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+        <!--项目依赖-->
+            <dependency>
+                <groupId>com.adam</groupId>
+                <artifactId>forum-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
