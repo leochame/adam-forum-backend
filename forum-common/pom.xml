@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>forum-common-database</module>
+        <module>forum-common-core</module>
     </modules>
 
     <properties>
