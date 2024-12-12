@@ -3,20 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.adam</groupId>
-        <artifactId>adam-forum</artifactId>
+        <artifactId>forum-common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-
-    <artifactId>forum-common</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>forum-common-database</module>
-    </modules>
+    <groupId>com.adam.common</groupId>
+    <artifactId>forum-common-database</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -24,4 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+
+    </dependencies>
 </project>
