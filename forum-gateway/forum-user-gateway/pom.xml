@@ -12,12 +12,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.adam.common.core</groupId>
+            <artifactId>forum-common-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

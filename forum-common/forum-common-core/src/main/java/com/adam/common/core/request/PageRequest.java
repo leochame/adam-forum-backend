@@ -1,6 +1,6 @@
 package com.adam.common.core.request;
 
-import com.wfa.hatch.common.constant.CommonConstant;
+import com.adam.common.core.constant.CommonConstant;
 import lombok.Data;
 
 /**
