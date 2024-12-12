@@ -1,4 +1,4 @@
-package com.adam.common.config;
+package com.adam.common.database.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
