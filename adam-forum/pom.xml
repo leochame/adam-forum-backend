@@ -11,7 +11,6 @@
     <modules>
         <module>../forum-common</module>
         <module>../forum-user</module>
-        <module>../forum-model</module>
         <module>../forum-file</module>
         <module>../forum-gateway</module>
         <module>../forum-post</module>
