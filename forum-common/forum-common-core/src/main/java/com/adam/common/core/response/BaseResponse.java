@@ -1,6 +1,6 @@
 package com.adam.common.core.response;
 
-import com.adam.common.core.constant.ErrorCode;
+import com.adam.common.core.constant.ErrorCodeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,14 +29,14 @@ public class BaseResponse<T> implements Serializable {
     }
 
     public boolean isSuccess() {
-        return Objects.equals(ErrorCode.SUCCESS.getCode(), this.code);
+        return Objects.equals(ErrorCodeEnum.SUCCESS.getCode(), this.code);
     }
 
     public BaseResponse(int code, T data) {
         this(code, data, "");
     }
 
-    public BaseResponse(ErrorCode errorCode) {
-        this(errorCode.getCode(), null, errorCode.getMessage());
+    public BaseResponse(ErrorCodeEnum errorCodeEnum) {
+        this(errorCodeEnum.getCode(), null, errorCodeEnum.getMessage());
     }
 }

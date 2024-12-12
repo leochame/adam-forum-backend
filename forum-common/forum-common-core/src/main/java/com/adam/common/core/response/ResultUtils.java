@@ -1,7 +1,7 @@
 package com.adam.common.core.response;
 
 
-import com.adam.common.core.constant.ErrorCode;
+import com.adam.common.core.constant.ErrorCodeEnum;
 
 /**
  * 返回工具类
@@ -22,11 +22,11 @@ public class ResultUtils {
     /**
      * 失败
      *
-     * @param errorCode
+     * @param errorCodeEnum
      * @return
      */
-    public static BaseResponse error(ErrorCode errorCode) {
-        return new BaseResponse<>(errorCode);
+    public static BaseResponse error(ErrorCodeEnum errorCodeEnum) {
+        return new BaseResponse<>(errorCodeEnum);
     }
 
     /**
@@ -43,10 +43,10 @@ public class ResultUtils {
     /**
      * 失败
      *
-     * @param errorCode
+     * @param errorCodeEnum
      * @return
      */
-    public static BaseResponse error(ErrorCode errorCode, String message) {
-        return new BaseResponse(errorCode.getCode(), null, message);
+    public static BaseResponse error(ErrorCodeEnum errorCodeEnum, String message) {
+        return new BaseResponse(errorCodeEnum.getCode(), null, message);
     }
 }
