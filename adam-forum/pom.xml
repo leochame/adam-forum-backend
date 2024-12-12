@@ -25,25 +25,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>3.4.0</spring-boot.version>
         <junit.version>4.13.2</junit.version>
+        <mybatis.version>2.2.2</mybatis.version>
         <mysql.version>8.0.33</mysql.version>
-        <mybatis.version>3.5.16</mybatis.version>
-        <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
-        <mybatis-spring.version>3.0.3</mybatis-spring.version>
-        <mybatisplus-spring-boot-starter.version>1.0.5</mybatisplus-spring-boot-starter.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <minio.version>8.5.1</minio.version>
         <spring-webmvc.version>6.2.0</spring-webmvc.version>
         <starter-gateway.version>4.1.5</starter-gateway.version>
+        <hutool-version>5.8.11</hutool-version>
+        <knif4j.version>4.4.0</knif4j.version>
+        <lombok.version>1.18.8</lombok.version>
+        <gson.version>2.9.1</gson.version>
     </properties>
 
 
     <dependencyManagement>
         <dependencies>
-        <!--内部依赖-->
-            <dependency>
-                <groupId>com.adam</groupId>
-                <artifactId>forum-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
@@ -81,26 +77,27 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>${mybatis.version}</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis-spring-boot-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-                <version>${mybatis-spring}</version>
+                <version>${mybatis.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatisplus-spring-boot-starter</artifactId>
-                <version>${mybatisplus-spring-boot-starter.version}</version>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+                <version>${knif4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.minio</groupId>
@@ -112,6 +109,11 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-gateway</artifactId>
                 <version>${starter-gateway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
