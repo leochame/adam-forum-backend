@@ -26,6 +26,7 @@
         <spring-boot.version>3.4.0</spring-boot.version>
         <junit.version>4.13.2</junit.version>
         <mybatis.version>2.2.2</mybatis.version>
+        <mysql.version>8.0.33</mysql.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <minio.version>8.5.1</minio.version>
         <spring-webmvc.version>6.2.0</spring-webmvc.version>
@@ -75,6 +76,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
