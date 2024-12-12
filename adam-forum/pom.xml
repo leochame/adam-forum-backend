@@ -30,6 +30,7 @@
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
         <mybatis-spring.version>3.0.3</mybatis-spring.version>
         <mybatisplus-spring-boot-starter.version>1.0.5</mybatisplus-spring-boot-starter.version>
+        <minio.version>8.5.1</minio.version>
     </properties>
 
 
@@ -93,6 +94,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatisplus-spring-boot-starter</artifactId>
                 <version>${mybatisplus-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
