@@ -31,6 +31,8 @@
         <mybatis-spring.version>3.0.3</mybatis-spring.version>
         <mybatisplus-spring-boot-starter.version>1.0.5</mybatisplus-spring-boot-starter.version>
         <minio.version>8.5.1</minio.version>
+        <spring-webmvc.version>6.2.0</spring-webmvc.version>
+        <starter-gateway.version>4.1.5</starter-gateway.version>
     </properties>
 
 
@@ -61,6 +63,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-webmvc.version}</version>
             </dependency>
             <!--junit依赖-->
             <dependency>
@@ -99,6 +106,12 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <!--Gateway-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>${starter-gateway.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
