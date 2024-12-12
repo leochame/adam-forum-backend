@@ -1,34 +1,78 @@
 package com.adam.common.core.exception;
 
 
-import com.adam.common.core.constant.ErrorCode;
+import com.adam.common.core.constant.ErrorCodeEnum;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 自定义异常类
  */
+@Getter
+@Slf4j
 public class BusinessException extends RuntimeException {
+
+    /**
+     * 错误码枚举
+     */
+    private ErrorCodeEnum errorCodeEnum;
+
+    /**
+     * 错误消息
+     */
+    private String errorMessage;
 
     /**
      * 错误码
      */
-    private final int code;
+    private int errorCode;
 
-    public BusinessException(int code, String message) {
-        super(message);
-        this.code = code;
+    /**
+     * 构造函数：使用枚举类型初始化错误码和消息
+     */
+    public BusinessException(ErrorCodeEnum errorCodeEnum) {
+        super(errorCodeEnum.getMessage());  // 调用父类构造器设置异常消息
+        this.errorCodeEnum = errorCodeEnum;
+        this.errorCode = errorCodeEnum.getCode();
+        this.errorMessage = errorCodeEnum.getMessage();
+        log.error("BusinessException thrown with error code {}: {}", errorCode, errorMessage);
     }
 
-    public BusinessException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.code = errorCode.getCode();
+    /**
+     * 构造函数：使用枚举类型初始化错误码和消息
+     * 并且可以传递自定义消息
+     */
+    public BusinessException(ErrorCodeEnum errorCodeEnum, String message) {
+        super(message);  // 使用自定义消息
+        this.errorCodeEnum = errorCodeEnum;
+        this.errorCode = errorCodeEnum.getCode();
+        this.errorMessage = message;
+        log.error("BusinessException thrown with error code {}: {}", errorCode, message);
     }
 
-    public BusinessException(ErrorCode errorCode, String message) {
-        super(message);
-        this.code = errorCode.getCode();
+    /**
+     * 构造函数：使用枚举类型初始化错误码、消息和异常原因
+     * 此时可以提供堆栈信息
+     */
+    public BusinessException(ErrorCodeEnum errorCodeEnum, String message, Throwable cause) {
+        super(message, cause);  // 调用父类构造器设置异常消息和原因
+        this.errorCodeEnum = errorCodeEnum;
+        this.errorCode = errorCodeEnum.getCode();
+        this.errorMessage = message;
+        log.error("BusinessException thrown with error code {}: {}", errorCode, message, cause);
     }
 
-    public int getCode() {
-        return code;
+    /**
+     * 构造函数：不提供自定义消息，使用默认消息
+     * 传递异常原因
+     */
+    public BusinessException(ErrorCodeEnum errorCodeEnum, Throwable cause) {
+        super(errorCodeEnum.getMessage(), cause);
+        this.errorCodeEnum = errorCodeEnum;
+        this.errorCode = errorCodeEnum.getCode();
+        this.errorMessage = errorCodeEnum.getMessage();
+        log.error("BusinessException thrown with error code {}: {}", errorCode, errorMessage, cause);
     }
+
 }
+

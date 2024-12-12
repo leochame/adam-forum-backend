@@ -1,7 +1,7 @@
 package com.adam.common.core.exception;
 
 
-import com.adam.common.core.constant.ErrorCode;
+import com.adam.common.core.constant.ErrorCodeEnum;
 
 /**
  * 抛异常工具类
@@ -24,20 +24,20 @@ public class ThrowUtils {
      * 条件成立则抛异常
      *
      * @param condition
-     * @param errorCode
+     * @param errorCodeEnum
      */
-    public static void throwIf(boolean condition, ErrorCode errorCode) {
-        throwIf(condition, new BusinessException(errorCode));
+    public static void throwIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
+        throwIf(condition, new BusinessException(errorCodeEnum));
     }
 
     /**
      * 条件成立则抛异常
      *
      * @param condition
-     * @param errorCode
+     * @param errorCodeEnum
      * @param message
      */
-    public static void throwIf(boolean condition, ErrorCode errorCode, String message) {
-        throwIf(condition, new BusinessException(errorCode, message));
+    public static void throwIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
+        throwIf(condition, new BusinessException(errorCodeEnum, message));
     }
 }

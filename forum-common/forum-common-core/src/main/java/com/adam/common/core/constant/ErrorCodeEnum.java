@@ -3,7 +3,7 @@ package com.adam.common.core.constant;
 /**
  * 自定义错误码
  */
-public enum ErrorCode {
+public enum ErrorCodeEnum {
 
     SUCCESS(200, "ok"),
     PARAMS_ERROR(40000, "请求参数错误"),
@@ -15,7 +15,18 @@ public enum ErrorCode {
     FORBIDDEN_ERROR(40300, "禁止访问"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
-    EXCEPTION_ERROR(50002, "服务器出了点小差");
+    EXCEPTION_ERROR(50002, "服务器出了点小差"),
+    //MinIO服务内部错误
+    MinIO_SERVER_ERROR(50100, "MinIO 服务器错误"),
+    DATA_INSUFFICIENT(50200, "数据不足"),
+    MinIO_ERROR_RESPONSE(50300, "MinIO 错误响应"),
+    IO_ERROR(50400, "I/O 错误"),
+    INVALID_KEY_ERROR(50500, "无效密钥错误"),
+    INVALID_RESPONSE_ERROR(50600, "无效响应格式"),
+    XML_PARSE_ERROR(50700, "XML 解析错误"),
+    MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误");;
+
+
 
     /**
      * 状态码
@@ -27,7 +38,7 @@ public enum ErrorCode {
      */
     private final String message;
 
-    ErrorCode(int code, String message) {
+    ErrorCodeEnum(int code, String message) {
         this.code = code;
         this.message = message;
     }
