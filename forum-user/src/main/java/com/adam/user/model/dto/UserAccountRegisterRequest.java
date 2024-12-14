@@ -30,7 +30,7 @@ public class UserAccountRegisterRequest implements Serializable {
     /**
      * 确认密码
      */
-    @Schema(description = "用户密码")
+    @Schema(description = "确认密码")
     public String checkPassword;
 
     private static final long serialVersionUID = 1883918332008926351L;
