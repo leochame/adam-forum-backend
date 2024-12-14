@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 自定义异常类
  */
-@Getter
 @Slf4j
 public class BusinessException extends RuntimeException {
 
@@ -72,6 +71,10 @@ public class BusinessException extends RuntimeException {
         this.errorCode = errorCodeEnum.getCode();
         this.errorMessage = errorCodeEnum.getMessage();
         log.error("BusinessException thrown with error code {}: {}", errorCode, errorMessage, cause);
+    }
+
+    public int getCode() {
+        return errorCode;
     }
 
 }
