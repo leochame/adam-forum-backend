@@ -24,9 +24,10 @@ public enum ErrorCodeEnum {
     INVALID_KEY_ERROR(50500, "无效密钥错误"),
     INVALID_RESPONSE_ERROR(50600, "无效响应格式"),
     XML_PARSE_ERROR(50700, "XML 解析错误"),
-    MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误");;
-
-
+    MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误"),
+    // 缓存错误
+    CACHE_KEY_EMPTY_ERROR(30001, "缓存 key 值为空"),
+    CACHE_VALUE_EMPTY_ERROR(30001, "缓存 value 值为空");
 
     /**
      * 状态码

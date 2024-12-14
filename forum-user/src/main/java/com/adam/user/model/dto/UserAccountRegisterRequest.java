@@ -19,19 +19,19 @@ public class UserAccountRegisterRequest implements Serializable {
      * 用户账号
      */
     @Schema(description = "用户账户")
-    public String userAccount;
+    private String userAccount;
 
     /**
      * 用户密码
      */
     @Schema(description = "用户密码")
-    public String userPassword;
+    private String userPassword;
 
     /**
      * 确认密码
      */
     @Schema(description = "确认密码")
-    public String checkPassword;
+    private String checkPassword;
 
     private static final long serialVersionUID = 1883918332008926351L;
 }
