@@ -1,6 +1,7 @@
 package com.adam.auth.service;
 
 import com.adam.auth.model.entity.User;
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,4 +11,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
+    /**
+     * 用户账号密码登录
+     *
+     * @param userAccount  账号
+     * @param userPassword 密码
+     * @return
+     */
+    UserBasicInfoVO userLoginByUserAccountAndPassword(String userAccount, String userPassword);
 }
