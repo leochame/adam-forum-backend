@@ -16,15 +16,10 @@ public interface AuthCacheConstant {
     /**
      * token 授权相关key
      */
-    String OAUTH_TOKEN_PREFIX = AUTH_PREFIX + "token:";
+    String AUTH_TOKEN_PREFIX = AUTH_PREFIX + "token:";
 
     /**
      * 保存token 缓存使用key
      */
-    String ACCESS = OAUTH_TOKEN_PREFIX + "access:";
-
-    /**
-     * 刷新token 缓存使用key
-     */
-    String REFRESH_TO_ACCESS = OAUTH_TOKEN_PREFIX + "refresh_to_access:";
+    String ACCESS = AUTH_TOKEN_PREFIX + "access:";
 }

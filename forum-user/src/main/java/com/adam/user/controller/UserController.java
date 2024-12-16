@@ -4,7 +4,7 @@ import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
-import com.adam.user.model.dto.UserAccountRegisterRequest;
+import com.adam.user.model.dto.user.UserAccountRegisterRequest;
 import com.adam.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

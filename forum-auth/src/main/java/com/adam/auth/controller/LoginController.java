@@ -2,6 +2,7 @@ package com.adam.auth.controller;
 
 import com.adam.auth.model.dto.UserPasswordLoginRequest;
 import com.adam.auth.service.UserService;
+import com.adam.common.cache.service.RedisCacheService;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.model.vo.TokenVO;
@@ -31,6 +32,8 @@ public class LoginController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private RedisCacheService redisCacheService;
 
     @PostMapping("/login/password")
     @Operation(summary = "用户账号密码登录")
@@ -44,12 +47,13 @@ public class LoginController {
 
         // 判断登录凭证
         UserBasicInfoVO userBasicInfoVO = userService.userLoginByUserAccountAndPassword(userAccount, userPassword);
-        log.info("User {} Login Successfully!", userBasicInfoVO.getId());
 
         // 生成 token 信息
         TokenVO tokenVO = TokenUtil.createTokenVO(userBasicInfoVO.getId(), userAccount);
 
         // 将 token 信息存储到缓存中
+        redisCacheService.storeToken(userBasicInfoVO, tokenVO);
+        log.info("User {} Login Successfully!", userBasicInfoVO.getId());
 
         return ResultUtils.success(tokenVO);
     }

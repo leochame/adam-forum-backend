@@ -4,6 +4,8 @@ import com.adam.common.cache.constant.CacheConstant;
 import com.adam.common.cache.service.RedisCacheService;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.model.vo.TokenVO;
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.Resource;
@@ -190,6 +192,35 @@ public class RedisCacheServiceImpl implements RedisCacheService {
             log.error("Redis get Object List key: {} value error: {}", key, e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public void storeToken(UserBasicInfoVO userBasicInfoVO, TokenVO tokenVO) {
+        // 取出 token 值
+        String accessToken = tokenVO.getAccessToken();
+        long expireTime = tokenVO.getExpireTime();
+        // 获取过期时间
+        long period = expireTime - System.currentTimeMillis();
+        String key = CacheConstant.ACCESS + accessToken;
+        // 存储 token
+        setObjectWithExpireTime(key, userBasicInfoVO, expireTime);
+    }
+
+    @Override
+    public UserBasicInfoVO checkTokenAndGetUserBasicInfo(String token) {
+        if (StringUtils.isEmpty(token)) {
+            throw new BusinessException(ErrorCodeEnum.NOT_LOGIN_ERROR, "用户未登录");
+        }
+
+        String key = CacheConstant.ACCESS + token;
+
+        // 判断 Redis 是否过期
+        if (!hasKey(key)) {
+            throw new BusinessException(ErrorCodeEnum.NO_TOKEN_ERROR, "用户登录状态过期，请重新登录");
+        }
+
+        // 返回用户基础信息
+        return getObject(key, UserBasicInfoVO.class);
     }
 }
 

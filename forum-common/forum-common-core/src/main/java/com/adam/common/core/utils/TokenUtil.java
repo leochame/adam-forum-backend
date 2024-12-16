@@ -1,18 +1,11 @@
 package com.adam.common.core.utils;
 
-import com.adam.common.core.constant.ErrorCodeEnum;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
 import com.adam.common.core.constant.UserConstant;
-import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.model.vo.TokenVO;
-import com.adam.common.core.model.vo.UserBasicInfoVO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClaims;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -36,47 +29,12 @@ public class TokenUtil {
     public static TokenVO createTokenVO(Long userId, String userRole) {
         long current = System.currentTimeMillis();
         long expirationMills = current + getExpireTime(userRole);
-        byte[] secretKeyBytes = SECRET_KEY.getBytes();
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKeyBytes, SIGNATURE_ALGORITHM.getJcaName());
-        DefaultClaims claims = new DefaultClaims();
-        claims.setSubject(String.valueOf(userId))
-                .setIssuedAt(new Date(current))
-                .setExpiration(new Date(expirationMills));
-        claims.put("userRole", userRole);
-        String accessToken = Jwts.builder()
-                .setClaims(claims)
-                .signWith(SIGNATURE_ALGORITHM, secretKeySpec)
-                .compact();
         TokenVO tokenVO = new TokenVO();
-        tokenVO.setAccessToken(accessToken);
+        String accessToken = IdUtil.simpleUUID();
+        String encryptToken =  Base64.encode(accessToken + current + userRole);
+        tokenVO.setAccessToken(encryptToken);
         tokenVO.setExpireTime(expirationMills);
         return tokenVO;
-    }
-
-
-    /**
-     * 解析 token 用户信息
-     *
-     * @param accessToken 登录凭证
-     * @return 用户基础信息
-     */
-    public static UserBasicInfoVO checkToken(String accessToken) {
-        byte[] secretKeyBytes = SECRET_KEY.getBytes();
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKeyBytes, SIGNATURE_ALGORITHM.getJcaName());
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKeySpec)
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-            String userIdStr = claims.getSubject();
-            Date expiration = claims.getExpiration();
-            if (expiration.before(new Date())) {
-                throw new BusinessException(ErrorCodeEnum.NO_AUTH_ERROR, "Token失效");
-            }
-        } catch (ExpiredJwtException e) {
-//            throw new BusinessException()
-        }
-        return null;
     }
 
     /**

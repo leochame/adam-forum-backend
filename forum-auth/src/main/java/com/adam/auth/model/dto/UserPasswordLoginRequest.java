@@ -19,13 +19,13 @@ public class UserPasswordLoginRequest implements Serializable {
     /**
      * 用户账号
      */
-    @Schema(description = "用户账户")
+    @Schema(description = "用户账户", requiredMode = Schema.RequiredMode.REQUIRED)
     public String userAccount;
 
     /**
      * 用户密码
      */
-    @Schema(description = "用户密码")
+    @Schema(description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
     public String userPassword;
 
     @Serial
