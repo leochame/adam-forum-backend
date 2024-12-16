@@ -10,6 +10,7 @@ public enum ErrorCodeEnum {
     NOT_LOGIN_ERROR(40100, "未登录"),
     NO_AUTH_ERROR(40101, "无权限"),
     NO_TOKEN_ERROR(40102, "token已过期"),
+    USER_PASSWORD_ERROR(40200, "用户密码错误"),
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
     TOO_MANY_REQUEST(42900, "请求过于频繁"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
