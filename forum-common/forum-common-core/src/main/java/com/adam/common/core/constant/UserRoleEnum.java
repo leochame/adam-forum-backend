@@ -9,5 +9,6 @@ package com.adam.common.core.constant;
 public enum UserRoleEnum {
     USER,
     ADMIN,
-    SUPER_ADMIN;
+    SUPER_ADMIN,
+    BAN;
 }

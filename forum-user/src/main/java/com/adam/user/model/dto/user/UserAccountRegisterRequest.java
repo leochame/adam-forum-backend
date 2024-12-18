@@ -1,4 +1,4 @@
-package com.adam.user.model.dto;
+package com.adam.user.model.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -18,20 +18,20 @@ public class UserAccountRegisterRequest implements Serializable {
     /**
      * 用户账号
      */
-    @Schema(description = "用户账户")
-    public String userAccount;
+    @Schema(description = "用户账户", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String userAccount;
 
     /**
      * 用户密码
      */
-    @Schema(description = "用户密码")
-    public String userPassword;
+    @Schema(description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String userPassword;
 
     /**
      * 确认密码
      */
-    @Schema(description = "确认密码")
-    public String checkPassword;
+    @Schema(description = "确认密码", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String checkPassword;
 
     private static final long serialVersionUID = 1883918332008926351L;
 }

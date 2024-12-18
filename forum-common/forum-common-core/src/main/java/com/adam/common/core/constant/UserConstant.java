@@ -32,6 +32,11 @@ public interface UserConstant {
     String SUPER_ADMIN_ROLE = "super_admin";
 
     /**
+     * 被禁用
+     */
+    String BAN_ROLE = "ban";
+
+    /**
      * 普通用户默认头像列表
      */
     String[] DEFAULT_USER_AVATAR_LIST = {

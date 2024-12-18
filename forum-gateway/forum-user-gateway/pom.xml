@@ -16,5 +16,10 @@
             <artifactId>forum-common-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.adam</groupId>
+            <artifactId>forum-common-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

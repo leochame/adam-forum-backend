@@ -10,6 +10,7 @@ public enum ErrorCodeEnum {
     NOT_LOGIN_ERROR(40100, "未登录"),
     NO_AUTH_ERROR(40101, "无权限"),
     NO_TOKEN_ERROR(40102, "token已过期"),
+    USER_PASSWORD_ERROR(40200, "用户密码错误"),
     NOT_FOUND_ERROR(40400, "请求数据不存在"),
     TOO_MANY_REQUEST(42900, "请求过于频繁"),
     FORBIDDEN_ERROR(40300, "禁止访问"),
@@ -24,9 +25,10 @@ public enum ErrorCodeEnum {
     INVALID_KEY_ERROR(50500, "无效密钥错误"),
     INVALID_RESPONSE_ERROR(50600, "无效响应格式"),
     XML_PARSE_ERROR(50700, "XML 解析错误"),
-    MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误");;
-
-
+    MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误"),
+    // 缓存错误
+    CACHE_KEY_EMPTY_ERROR(30001, "缓存 key 值为空"),
+    CACHE_VALUE_EMPTY_ERROR(30001, "缓存 value 值为空");
 
     /**
      * 状态码
