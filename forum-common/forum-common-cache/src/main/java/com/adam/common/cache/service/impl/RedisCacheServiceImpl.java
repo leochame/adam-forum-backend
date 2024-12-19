@@ -193,34 +193,5 @@ public class RedisCacheServiceImpl implements RedisCacheService {
         }
         return null;
     }
-
-    @Override
-    public void storeToken(UserBasicInfoVO userBasicInfoVO, TokenVO tokenVO) {
-        // 取出 token 值
-        String accessToken = tokenVO.getAccessToken();
-        long expireTime = tokenVO.getExpireTime();
-        // 获取过期时间
-        long period = expireTime - System.currentTimeMillis();
-        String key = CacheConstant.ACCESS + accessToken;
-        // 存储 token
-        setObjectWithExpireTime(key, userBasicInfoVO, expireTime);
-    }
-
-    @Override
-    public UserBasicInfoVO checkTokenAndGetUserBasicInfo(String token) {
-        if (StringUtils.isEmpty(token)) {
-            throw new BusinessException(ErrorCodeEnum.NOT_LOGIN_ERROR, "用户未登录");
-        }
-
-        String key = CacheConstant.ACCESS + token;
-
-        // 判断 Redis 是否过期
-        if (!hasKey(key)) {
-            throw new BusinessException(ErrorCodeEnum.NO_TOKEN_ERROR, "用户登录状态过期，请重新登录");
-        }
-
-        // 返回用户基础信息
-        return getObject(key, UserBasicInfoVO.class);
-    }
 }
 

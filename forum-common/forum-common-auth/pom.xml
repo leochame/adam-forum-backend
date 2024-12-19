@@ -3,29 +3,31 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.adam</groupId>
-        <artifactId>adam-forum</artifactId>
+        <artifactId>forum-common</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../adam-forum/pom.xml</relativePath>
     </parent>
 
-
-    <artifactId>forum-common</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>forum-common-database</module>
-        <module>forum-common-core</module>
-        <module>forum-common-cache</module>
-        <module>forum-common-auth</module>
-    </modules>
+    <artifactId>forum-common-auth</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.adam.common.core</groupId>
+            <artifactId>forum-common-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.adam</groupId>
+            <artifactId>forum-common-auth</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
