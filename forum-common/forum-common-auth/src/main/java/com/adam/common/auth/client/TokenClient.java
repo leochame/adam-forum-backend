@@ -37,6 +37,13 @@ public class TokenClient {
     @Resource
     private RedisCacheService redisCacheService;
 
+    /**
+     * 生成 token 并存储在缓存中
+     *
+     * @param userBasicInfoVO 用户基础信息
+     * @param device          当前登录设备
+     * @return tokenVO
+     */
     public TokenVO createTokenVOAndStore(UserBasicInfoVO userBasicInfoVO, String device) {
         long current = System.currentTimeMillis();
         String userRole = userBasicInfoVO.getUserRole();
@@ -161,6 +168,19 @@ public class TokenClient {
 
         // 返回用户基础信息
         return tokenCacheVO.getUserBasicInfoVO();
+    }
+
+    /**
+     * 移除当前用户 token 缓存
+     *
+     * @param userBasicInfoVO 用户基础信息
+     * @param device          当前登录设备
+     */
+    public void removeTokenCache(UserBasicInfoVO userBasicInfoVO, String device) {
+        String cacheKey = CacheConstant.ACCESS + getCacheKey(String.valueOf(userBasicInfoVO.getId()), device);
+        redisCacheService.removeKey(cacheKey);
+        log.info("当前用户名: {}, id: {}, 退出 {} 端登录",
+                userBasicInfoVO.getUsername(), userBasicInfoVO.getId(), device);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.adam.auth.controller;
 import com.adam.auth.model.dto.UserPasswordLoginRequest;
 import com.adam.auth.service.UserService;
 import com.adam.common.auth.client.TokenClient;
+import com.adam.common.auth.security.SecurityContext;
 import com.adam.common.auth.vo.TokenVO;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
@@ -36,6 +37,13 @@ public class LoginController {
     @Resource
     private TokenClient tokenClient;
 
+    /**
+     * 用户账号密码登录
+     *
+     * @param userPasswordLoginRequest 用户账号密码请求类
+     * @param request                  request
+     * @return token
+     */
     @PostMapping("/login/password")
     @Operation(summary = "用户账号密码登录")
     public BaseResponse<TokenVO> userPasswordLogin(@RequestBody UserPasswordLoginRequest userPasswordLoginRequest,
@@ -60,5 +68,19 @@ public class LoginController {
         return ResultUtils.success(tokenVO);
     }
 
-
+    /**
+     * 用户退出登录
+     *
+     * @param request request
+     * @return 退出登录成功
+     */
+    @PostMapping("/logout")
+    @Operation(summary = "用户当前设备登出")
+    public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        String device = DeviceUtils.getRequestDevice(request);
+        // 移除缓存中当前设备登录信息
+        tokenClient.removeTokenCache(currentUser, device);
+        return ResultUtils.success(true);
+    }
 }
