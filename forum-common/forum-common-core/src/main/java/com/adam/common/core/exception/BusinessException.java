@@ -34,7 +34,6 @@ public class BusinessException extends RuntimeException {
         this.errorCodeEnum = errorCodeEnum;
         this.errorCode = errorCodeEnum.getCode();
         this.errorMessage = errorCodeEnum.getMessage();
-        log.error("BusinessException thrown with error code {}: {}", errorCode, errorMessage);
     }
 
     /**
@@ -46,7 +45,6 @@ public class BusinessException extends RuntimeException {
         this.errorCodeEnum = errorCodeEnum;
         this.errorCode = errorCodeEnum.getCode();
         this.errorMessage = message;
-        log.error("BusinessException thrown with error code {}: {}", errorCode, message);
     }
 
     /**
@@ -58,7 +56,6 @@ public class BusinessException extends RuntimeException {
         this.errorCodeEnum = errorCodeEnum;
         this.errorCode = errorCodeEnum.getCode();
         this.errorMessage = message;
-        log.error("BusinessException thrown with error code {}: {}", errorCode, message, cause);
     }
 
     /**
@@ -70,12 +67,10 @@ public class BusinessException extends RuntimeException {
         this.errorCodeEnum = errorCodeEnum;
         this.errorCode = errorCodeEnum.getCode();
         this.errorMessage = errorCodeEnum.getMessage();
-        log.error("BusinessException thrown with error code {}: {}", errorCode, errorMessage, cause);
     }
 
     public int getCode() {
         return errorCode;
     }
-
 }
 

@@ -1,11 +1,11 @@
 package com.adam.auth.controller;
 
-import com.adam.auth.client.TokenClient;
 import com.adam.auth.model.dto.UserPasswordLoginRequest;
 import com.adam.auth.service.UserService;
+import com.adam.common.auth.client.TokenClient;
+import com.adam.common.auth.vo.TokenVO;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
-import com.adam.common.core.model.vo.TokenVO;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;

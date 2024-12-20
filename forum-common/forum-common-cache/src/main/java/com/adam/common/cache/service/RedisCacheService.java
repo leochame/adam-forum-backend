@@ -1,8 +1,5 @@
 package com.adam.common.cache.service;
 
-import com.adam.common.core.model.vo.TokenVO;
-import com.adam.common.core.model.vo.UserBasicInfoVO;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

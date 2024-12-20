@@ -25,8 +25,14 @@
         </dependency>
         <dependency>
             <groupId>com.adam</groupId>
-            <artifactId>forum-common-auth</artifactId>
+            <artifactId>forum-common-cache</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <!--JWT令牌-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.12.5</version>
         </dependency>
     </dependencies>
 
