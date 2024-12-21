@@ -65,6 +65,11 @@ public class User implements Serializable {
     private String slogan;
 
     /**
+     * 个人介绍
+     */
+    private String profile;
+
+    /**
      * 用户身份
      */
     private String userRole;

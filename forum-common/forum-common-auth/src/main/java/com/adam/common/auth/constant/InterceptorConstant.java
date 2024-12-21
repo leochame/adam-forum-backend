@@ -27,6 +27,7 @@ public interface InterceptorConstant {
             "/doc.html/**",
             "/favicon.ico/**",
             "/v3/api-docs/**",
+            "/webjars/**",
             // 用户登录
             "/auth/login/password"
     );
