@@ -3,7 +3,7 @@ package com.adam.user.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.constant.UserConstant;
-import com.adam.common.core.constant.UserRoleEnum;
+import com.adam.common.core.enums.UserRoleEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.utils.RandomAvatarUtil;

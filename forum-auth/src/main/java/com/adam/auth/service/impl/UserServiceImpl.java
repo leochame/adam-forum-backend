@@ -4,7 +4,6 @@ import com.adam.auth.mapper.UserMapper;
 import com.adam.auth.model.entity.User;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.constant.UserConstant;
-import com.adam.common.core.constant.UserRoleEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.database.constant.DatabaseConstant;

@@ -1,6 +1,6 @@
 package com.adam.common.core.model.vo;
 
-import com.adam.common.core.constant.UserRoleEnum;
+import com.adam.common.core.enums.UserRoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
