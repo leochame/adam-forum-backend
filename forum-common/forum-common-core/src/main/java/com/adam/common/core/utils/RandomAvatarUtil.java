@@ -3,7 +3,7 @@ package com.adam.common.core.utils;
 import cn.hutool.core.util.RandomUtil;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.constant.UserConstant;
-import com.adam.common.core.constant.UserRoleEnum;
+import com.adam.common.core.enums.UserRoleEnum;
 import com.adam.common.core.exception.ThrowUtils;
 import org.apache.commons.lang3.StringUtils;
 

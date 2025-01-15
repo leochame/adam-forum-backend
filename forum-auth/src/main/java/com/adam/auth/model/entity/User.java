@@ -75,6 +75,11 @@ public class User implements Serializable {
     private String slogan;
 
     /**
+     * 个人介绍
+     */
+    private String profile;
+
+    /**
      * 创建时间
      */
     private Date createTime;

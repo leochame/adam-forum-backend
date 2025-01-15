@@ -20,13 +20,13 @@ public class UserPasswordLoginRequest implements Serializable {
      * 用户账号
      */
     @Schema(description = "用户账户", requiredMode = Schema.RequiredMode.REQUIRED)
-    public String userAccount;
+    private String userAccount;
 
     /**
      * 用户密码
      */
     @Schema(description = "用户密码", requiredMode = Schema.RequiredMode.REQUIRED)
-    public String userPassword;
+    private String userPassword;
 
     @Serial
     private static final long serialVersionUID = 2147620140317487302L;

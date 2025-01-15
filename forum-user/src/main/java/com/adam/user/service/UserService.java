@@ -1,5 +1,6 @@
 package com.adam.user.service;
 
+import com.adam.user.model.dto.user.UserEditRequest;
 import com.adam.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -19,4 +20,12 @@ public interface UserService extends IService<User> {
      * @return 用户唯一id
      */
     long userRegisterByAccount(String userAccount, String userPassword, String checkPassword);
+
+    /**
+     * 用户编辑个人信息
+     *
+     * @param userEditRequest 用户编辑信息内容
+     * @return 编辑成功
+     */
+    boolean editUser(UserEditRequest userEditRequest);
 }

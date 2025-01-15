@@ -19,6 +19,7 @@
         <module>forum-common-database</module>
         <module>forum-common-core</module>
         <module>forum-common-cache</module>
+        <module>forum-common-auth</module>
     </modules>
 
     <properties>

@@ -1,20 +1,27 @@
 package com.adam.user.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.adam.common.auth.security.SecurityContext;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.constant.UserConstant;
-import com.adam.common.core.constant.UserRoleEnum;
+import com.adam.common.core.enums.UserRoleEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.utils.RandomAvatarUtil;
+import com.adam.common.database.constant.DatabaseConstant;
+import com.adam.user.model.dto.user.UserEditRequest;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.adam.user.model.entity.User;
 import com.adam.user.service.UserService;
 import com.adam.user.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author iceman
@@ -22,6 +29,7 @@ import org.springframework.util.DigestUtils;
  * @createDate 2024-12-12 21:19:05
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
@@ -57,6 +65,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             return user.getId();
         }
+    }
+
+    @Override
+    public boolean editUser(UserEditRequest userEditRequest) {
+        // 获取当前登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+
+        // 1. 校验参数
+        if (!currentUser.getId().equals(userEditRequest.getUserId())) {
+            throw new BusinessException(ErrorCodeEnum.OPERATION_ERROR, "仅能编辑自己的个人信息！");
+        }
+
+        // 判断用户是否存在
+        User user = baseMapper.selectOne(Wrappers.<User>lambdaQuery()
+                .eq(User::getId, userEditRequest.getUserId())
+                .select(User::getId)
+                .last(DatabaseConstant.LIMIT_ONE));
+        ThrowUtils.throwIf(ObjectUtils.isEmpty(user), ErrorCodeEnum.NOT_FOUND_ERROR, "编辑用户数据不存在");
+
+        BeanUtils.copyProperties(userEditRequest, user);
+        boolean result = baseMapper.updateById(user) != 0;
+        ThrowUtils.throwIf(!result, ErrorCodeEnum.OPERATION_ERROR, "编辑自己信息失败，请重试！");
+        log.info("成功更新用户信息 {}", userEditRequest);
+        return true;
     }
 }
 

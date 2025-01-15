@@ -1,8 +1,5 @@
 package com.adam.common.cache.service;
 
-import com.adam.common.core.model.vo.TokenVO;
-import com.adam.common.core.model.vo.UserBasicInfoVO;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -147,19 +144,4 @@ public interface RedisCacheService {
      */
     <T> List<T> getObjectList(String key, Class<T> valueClass);
 
-    /**
-     * 存储 AccessToken
-     *
-     * @param userBasicInfoVO 用户基础信息
-     * @param tokenVO         accessToken
-     */
-    void storeToken(UserBasicInfoVO userBasicInfoVO, TokenVO tokenVO);
-
-    /**
-     * 校验 token 并获取用户基础信息
-     *
-     * @param token accessToken
-     * @return 用户基础信息
-     */
-    UserBasicInfoVO checkTokenAndGetUserBasicInfo(String token);
 }

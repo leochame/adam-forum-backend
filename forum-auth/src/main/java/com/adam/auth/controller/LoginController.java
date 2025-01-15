@@ -2,17 +2,19 @@ package com.adam.auth.controller;
 
 import com.adam.auth.model.dto.UserPasswordLoginRequest;
 import com.adam.auth.service.UserService;
-import com.adam.common.cache.service.RedisCacheService;
+import com.adam.common.auth.client.TokenClient;
+import com.adam.common.auth.security.SecurityContext;
+import com.adam.common.auth.vo.TokenVO;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
-import com.adam.common.core.model.vo.TokenVO;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
-import com.adam.common.core.utils.TokenUtil;
+import com.adam.common.core.utils.DeviceUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,11 +35,19 @@ public class LoginController {
     private UserService userService;
 
     @Resource
-    private RedisCacheService redisCacheService;
+    private TokenClient tokenClient;
 
+    /**
+     * 用户账号密码登录
+     *
+     * @param userPasswordLoginRequest 用户账号密码请求类
+     * @param request                  request
+     * @return token
+     */
     @PostMapping("/login/password")
     @Operation(summary = "用户账号密码登录")
-    public BaseResponse<TokenVO> userPasswordLogin(@RequestBody UserPasswordLoginRequest userPasswordLoginRequest) {
+    public BaseResponse<TokenVO> userPasswordLogin(@RequestBody UserPasswordLoginRequest userPasswordLoginRequest,
+                                                   HttpServletRequest request) {
         if (userPasswordLoginRequest == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "用户账号密码为空!");
         }
@@ -48,15 +58,29 @@ public class LoginController {
         // 判断登录凭证
         UserBasicInfoVO userBasicInfoVO = userService.userLoginByUserAccountAndPassword(userAccount, userPassword);
 
-        // 生成 token 信息
-        TokenVO tokenVO = TokenUtil.createTokenVO(userBasicInfoVO.getId(), userAccount);
-
-        // 将 token 信息存储到缓存中
-        redisCacheService.storeToken(userBasicInfoVO, tokenVO);
-        log.info("User {} Login Successfully!", userBasicInfoVO.getId());
+        // 生成 token 信息并放入缓存中
+        String userRole = userBasicInfoVO.getUserRole();
+        String device = DeviceUtils.getRequestDevice(request);
+        TokenVO tokenVO = tokenClient.createTokenVOAndStore(userBasicInfoVO, device);
+        log.info("User {} ({} role) Login by {} Successfully! userId: {}",
+                userBasicInfoVO.getUsername(), userRole, device, userBasicInfoVO.getId());
 
         return ResultUtils.success(tokenVO);
     }
 
-
+    /**
+     * 用户退出登录
+     *
+     * @param request request
+     * @return 退出登录成功
+     */
+    @PostMapping("/logout")
+    @Operation(summary = "用户当前设备登出")
+    public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        String device = DeviceUtils.getRequestDevice(request);
+        // 移除缓存中当前设备登录信息
+        tokenClient.removeTokenCache(currentUser, device);
+        return ResultUtils.success(true);
+    }
 }
