@@ -6,6 +6,7 @@ import com.adam.config.MinIOConfigProperties;
 import com.adam.service.FileStorageService;
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.messages.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
@@ -181,6 +182,16 @@ public class MinIOFileStorageService implements FileStorageService {
 
     @Override
     public Boolean uploadVideoPartFile(String fileName, InputStream stream, String contentType) {
+        try {
+            List<Bucket> buckets = minioClient.listBuckets();
+            System.out.println("Buckets available:");
+            for (Bucket bucket : buckets) {
+                System.out.println(bucket.name());
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         // 使用 try-with-resources 语法自动关闭 InputStream，确保资源不会泄漏
         try (stream) {
             // 通过 MinIO 客户端上传文件
@@ -189,13 +200,13 @@ public class MinIOFileStorageService implements FileStorageService {
             // - stream: 文件内容的输入流
             // - -1 表示未知的文件长度，10485760 表示 10MB 的最大内存缓冲区大小
             // - contentType: 文件的 MIME 类型，用于识别文件格式
-            minioClient.putObject(
-                    PutObjectArgs.builder()
-                            .bucket(VIDEO_BUCKET_NAME)  // 存储桶名称
-                            .object(fileName)  // 文件名
-                            .stream(stream, -1, 10485760)  // 输入流、文件长度（未知）、最大内存缓冲区大小
-                            .contentType(contentType)  // MIME 类型
-                            .build());
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(VIDEO_BUCKET_NAME)  // 存储桶名称
+                    .object(fileName)  // 文件名
+                    .stream(stream, -1, 10485760)  // 输入流、文件长度（未知）、最大内存缓冲区大小
+//                    .contentType(contentType)  // MIME 类型
+                    .build();
+            minioClient.putObject(putObjectArgs);
             // 文件上传成功，返回 true
             return true;
         } catch (IOException e) {
