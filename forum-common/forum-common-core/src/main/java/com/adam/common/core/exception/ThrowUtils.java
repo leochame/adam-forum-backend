@@ -40,4 +40,15 @@ public class ThrowUtils {
     public static void throwIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
         throwIf(condition, new BusinessException(errorCodeEnum, message));
     }
+
+    /**
+     * 条件成立则抛异常
+     *
+     * @param condition
+     * @param errorCodeEnum
+     * @param message
+     */
+    public static void throwRpcIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
+        throwIf(condition, new BusinessRpcException(errorCodeEnum, message));
+    }
 }

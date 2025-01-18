@@ -51,6 +51,7 @@ public class UserController {
         long userId = userService.userRegisterByAccount(userAccount, userPassword, checkPassword);
 
         return ResultUtils.success(userId);
+        
     }
 
     /**

@@ -43,5 +43,11 @@
             <artifactId>forum-common-auth</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.adam</groupId>
+            <artifactId>forum-api-user</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
