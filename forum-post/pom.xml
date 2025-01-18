@@ -33,14 +33,7 @@
 <!--            <artifactId>forum-common-auth</artifactId>-->
 <!--            <version>${project.version}</version>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-nacos-spring-boot-starter</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.adam</groupId>
             <artifactId>forum-api-user</artifactId>

@@ -27,15 +27,17 @@
             <artifactId>forum-common-database</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.adam.common.core</groupId>
-            <artifactId>forum-common-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>com.adam</groupId>
             <artifactId>forum-common-auth</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adam.common.core</groupId>
+            <artifactId>forum-common-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
