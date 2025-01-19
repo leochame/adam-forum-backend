@@ -21,11 +21,13 @@ public class PostImageAddRequest implements Serializable {
     /**
      * 帖子id
      */
+    @Schema(description = "帖子 id", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long postId;
 
     /**
      * 图片
      */
+    @Schema(description = "图片列表", requiredMode = Schema.RequiredMode.REQUIRED)
     @Size(max = 9, message = "最多添加 9 张图片")
     private List<String> imageList;
 
