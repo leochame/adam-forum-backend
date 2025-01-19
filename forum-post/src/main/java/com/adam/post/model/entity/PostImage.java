@@ -37,11 +37,6 @@ public class PostImage implements Serializable {
     private String image;
 
     /**
-     * 图片顺序 (1 - 9)
-     */
-    private Integer imageOrder;
-
-    /**
      * 创建时间
      */
     private Date createTime;

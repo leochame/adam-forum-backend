@@ -28,7 +28,6 @@ public class PostImageUpdateRequest implements Serializable {
      * 图片
      */
     @Schema(description = "图片列表", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Size(max = 9, message = "最多关联 9 张图片")
     private List<String> imageList;
 
     @Serial

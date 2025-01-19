@@ -2,7 +2,7 @@ package com.adam.post.service;
 
 import com.adam.post.model.entity.PostImage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import jakarta.validation.constraints.Size;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,11 +14,21 @@ import java.util.List;
 public interface PostImageService extends IService<PostImage> {
 
     /**
-     * 添加帖子图片
+     * 添加帖子图片（内部使用）
      *
      * @param postId    帖子 id
      * @param imageList 图片列表
-     * @return 添加图片成功
      */
-    boolean addPostImage(Long postId, List<String> imageList);
+    void addPostImage(Long postId, List<String> imageList);
+
+    /**
+     * 更新帖子图片
+     *
+     * @param postId        帖子 id
+     * @param imageList     图片列表
+     * @param currentUserId 当前登录用户 id
+     * @return 更新成功
+     */
+    @Transactional(rollbackFor = Exception.class)
+    boolean updatePostImages(Long postId, List<String> imageList, Long currentUserId);
 }
