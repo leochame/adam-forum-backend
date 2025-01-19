@@ -3,6 +3,8 @@ package com.adam.post.service;
 import com.adam.post.model.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author chenjiahan
  * @description 针对表【tag(标签表)】的数据库操作Service
@@ -26,4 +28,14 @@ public interface TagService extends IService<Tag> {
      * @return 删除成功
      */
     boolean deleteTag(Long tagId);
+
+    /**
+     * 关联帖子标签
+     *
+     * @param postId        帖子 id
+     * @param tagIdList     标签 id 列表
+     * @param currentUserId 当前登录用户 id
+     * @return 关联成功
+     */
+    boolean associatePostTagList(Long postId, List<Long> tagIdList, Long currentUserId);
 }

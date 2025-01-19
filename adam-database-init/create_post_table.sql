@@ -49,19 +49,19 @@ create table if not exists tag
 ) comment '标签表' collate = utf8mb4_unicode_ci;
 
 -- 帖子标签关联表
-create table if not exists post_thumb
+create table if not exists post_tag
 (
     id         bigint auto_increment comment 'id' primary key,
     post_id    bigint                             not null comment '帖子 id',
     tag_id     bigint                             not null comment '标签 id',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_post_id (post_id),
     index idx_tag_id (tag_id)
-) comment '帖子点赞表';
+) comment '帖子标签关联表';
 
 -- 帖子点赞表
-create table if not exists post_tag
+create table if not exists post_thumb
 (
     id          bigint auto_increment primary key  not null comment 'id',
     post_id     bigint                             not null comment '帖子id',
@@ -78,8 +78,8 @@ create table if not exists post_favour
     id         bigint auto_increment comment 'id' primary key,
     post_id    bigint                             not null comment '帖子 id',
     user_id    bigint                             not null comment '创建用户 id',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_post_id (post_id),
     index idx_userId (user_id)
 ) comment '帖子收藏表';

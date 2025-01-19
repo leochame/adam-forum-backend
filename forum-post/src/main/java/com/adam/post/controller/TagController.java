@@ -5,17 +5,22 @@ import com.adam.common.auth.security.SecurityContext;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.enums.UserRoleEnum;
 import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.request.DeleteRequest;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
+import com.adam.post.model.request.tag.PostTagAssociationRequest;
 import com.adam.post.model.request.tag.TagAddRequest;
 import com.adam.post.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author <a href="https://github.com/IceProgramer">chenjiahan</a>
@@ -67,6 +72,34 @@ public class TagController {
         }
 
         boolean result = tagService.deleteTag(tagId);
+
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 关联帖子标签
+     *
+     * @param postTagAssociationRequest 关联帖子标签请求类
+     * @return 关联成功
+     */
+    @PostMapping("/associate")
+    @Operation(summary = "用户关联帖子标签")
+    public BaseResponse<Boolean> associatePostTag(@RequestBody PostTagAssociationRequest postTagAssociationRequest) {
+        ThrowUtils.throwIf(postTagAssociationRequest == null, ErrorCodeEnum.PARAMS_ERROR, "帖子关联标签参数不能为空！");
+        Long postId = postTagAssociationRequest.getPostId();
+        List<Long> tagIdList = postTagAssociationRequest.getTagIdList();
+
+        if (postId == null || postId <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "帖子 id 错误");
+        }
+        if (CollectionUtils.isEmpty(tagIdList)) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "帖子关联标签错误");
+        }
+
+        // 获取当前登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+
+        boolean result = tagService.associatePostTagList(postId, tagIdList, currentUser.getId());
 
         return ResultUtils.success(result);
     }
