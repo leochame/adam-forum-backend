@@ -9,7 +9,6 @@ import com.adam.user.model.dto.user.UserAccountRegisterRequest;
 import com.adam.user.model.dto.user.UserEditRequest;
 import com.adam.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
