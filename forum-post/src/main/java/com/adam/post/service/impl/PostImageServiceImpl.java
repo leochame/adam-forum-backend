@@ -38,31 +38,12 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
         if (CollectionUtils.isEmpty(imageList)) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "图片为空！");
         }
+
         // 获取当前登录用户
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
-        // 判断帖子是否存在
-        Post post = postMapper.selectOne(Wrappers.<Post>lambdaQuery()
-                .eq(Post::getId, postId)
-                .select(Post::getUserId)
-                .last(DatabaseConstant.LIMIT_ONE));
-        ThrowUtils.throwIf(post == null, ErrorCodeEnum.NOT_FOUND_ERROR, "相关帖子信息不存在！");
-
-        // 判断帖子是否为当前登录用户的
-        ThrowUtils.throwIf(!post.getUserId().equals(currentUser.getId()), ErrorCodeEnum.NO_AUTH_ERROR, "仅帖子发布者可关联图片");
-
-        // 获取原有图片
-        List<PostImage> postImageList = baseMapper.selectList(Wrappers.<PostImage>lambdaQuery()
-                .eq(PostImage::getPostId, postId)
-                .select(PostImage::getImageOrder));
-
-        // 获取当前图片数量
-        AtomicInteger size = new AtomicInteger();
-        if (postImageList != null) {
-            size.set(postImageList.size());
-        }
 
         // 判断总图片数量是否超过 9 张
-        if (size.get() + imageList.size() > 9) {
+        if (imageList.size() > 9) {
             throw new BusinessException(ErrorCodeEnum.OPERATION_ERROR, "帖子最多关联 9 张图片");
         }
 
@@ -72,8 +53,6 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
             postImage.setUserId(currentUser.getId());
             postImage.setPostId(postId);
             postImage.setImage(image);
-            postImage.setImageOrder(size.get() + 1);
-            size.getAndIncrement();
             return postImage;
         }).collect(Collectors.toSet());
 

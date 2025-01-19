@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 帖子图片添加请求类
+ * 帖子图片更新请求类
  *
  * @author <a href="https://github.com/IceProgramer">chenjiahan</a>
- * @create 2025/1/19 13:07
+ * @create 2025/1/19 20:29
  */
 @Data
-@Schema(name = "帖子图片添加请求", description = "用户对帖子添加图片请求")
-public class PostImageAddRequest implements Serializable {
+@Schema(name = "帖子图片更新请求", description = "用户更新帖子图片关联")
+public class PostImageUpdateRequest implements Serializable {
 
     /**
      * 帖子id
@@ -28,9 +28,9 @@ public class PostImageAddRequest implements Serializable {
      * 图片
      */
     @Schema(description = "图片列表", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Size(max = 9, message = "最多添加 9 张图片")
+    @Size(max = 9, message = "最多关联 9 张图片")
     private List<String> imageList;
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8828236698948741357L;
 }
