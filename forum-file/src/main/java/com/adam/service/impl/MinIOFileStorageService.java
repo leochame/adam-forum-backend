@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import static com.adam.vedio.constants.VedioConstants.uploadPartMap;
+import static com.adam.vedio.constants.UploadStateManager.uploadPartMap;
 
 
 @Slf4j

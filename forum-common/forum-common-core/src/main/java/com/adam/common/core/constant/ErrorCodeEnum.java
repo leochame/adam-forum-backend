@@ -30,7 +30,11 @@ public enum ErrorCodeEnum {
     MinIO_INTERNAL_CLIENT_ERROR(50800, "MinIO 客户端内部错误"),
     // 缓存错误
     CACHE_KEY_EMPTY_ERROR(30001, "缓存 key 值为空"),
-    CACHE_VALUE_EMPTY_ERROR(30001, "缓存 value 值为空");
+    CACHE_VALUE_EMPTY_ERROR(30001, "缓存 value 值为空"),
+    //video模块
+    VIDEO_PROCESS_ERROR(60001, "video处理出错"),
+    FILE_UPLOAD_ERROR(60002, "video上传到Minio出错"),
+    FILE_MERGE_ERROR(60003, "video合并失败");
 
     /**
      * 状态码
