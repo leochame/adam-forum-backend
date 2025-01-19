@@ -2,11 +2,11 @@ package com.adam.post.service.impl;
 
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.ThrowUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.adam.post.mapper.TagMapper;
 import com.adam.post.model.entity.Tag;
 import com.adam.post.service.TagService;
-import com.adam.post.mapper.TagMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +31,14 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         baseMapper.insert(tag);
 
         return tag.getId();
+    }
+
+    @Override
+    public boolean deleteTag(Long tagId) {
+        boolean result = baseMapper.delete(Wrappers.<Tag>lambdaQuery()
+                .eq(Tag::getId, tagId)) != 0;
+        ThrowUtils.throwIf(!result, ErrorCodeEnum.NOT_FOUND_ERROR, "删除 tag 已不存在，请勿重复操作");
+        return true;
     }
 }
 

@@ -2,7 +2,6 @@ package com.adam.post.service;
 
 import com.adam.post.model.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
-import jakarta.validation.constraints.Size;
 
 /**
  * @author chenjiahan
@@ -19,4 +18,12 @@ public interface TagService extends IService<Tag> {
      * @return 标签 id
      */
     long addTag(String tagName, Long userId);
+
+    /**
+     * 删除自定义标签
+     *
+     * @param tagId 标签 id
+     * @return 删除成功
+     */
+    boolean deleteTag(Long tagId);
 }
