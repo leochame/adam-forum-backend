@@ -1,7 +1,6 @@
 package com.adam.post.model.request.image;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serial;

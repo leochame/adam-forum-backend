@@ -24,7 +24,7 @@ public class UserEditRequest {
      * 用户名称
      */
     @Schema(description = "用户名称")
-    @Size(max = 20, message = "用户名称长度不能超过 20")
+    @Size(max = 1, message = "用户名称长度不能超过 20")
     private String username;
 
     /**

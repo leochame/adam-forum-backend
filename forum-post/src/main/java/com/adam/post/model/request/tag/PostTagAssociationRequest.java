@@ -1,6 +1,7 @@
 package com.adam.post.model.request.tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import lombok.Data;
 
 import java.io.Serial;

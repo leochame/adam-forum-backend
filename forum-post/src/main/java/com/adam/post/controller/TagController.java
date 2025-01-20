@@ -16,6 +16,7 @@ import com.adam.post.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class TagController {
      */
     @PostMapping("/add")
     @Operation(summary = "添加自定义 tag")
-    public BaseResponse<Long> addTag(@RequestBody TagAddRequest tagAddRequest) {
+    public BaseResponse<Long> addTag(@Valid @RequestBody TagAddRequest tagAddRequest) {
         if (tagAddRequest == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "新增标签不能为空！");
         }
