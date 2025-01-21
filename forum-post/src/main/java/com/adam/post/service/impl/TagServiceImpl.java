@@ -10,6 +10,7 @@ import com.adam.post.mapper.TagMapper;
 import com.adam.post.model.entity.Post;
 import com.adam.post.model.entity.PostTag;
 import com.adam.post.model.entity.Tag;
+import com.adam.post.model.vo.TagVO;
 import com.adam.post.service.TagService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -102,6 +103,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         postTagMapper.insert(postTagSet);
         log.info("关联 post {} 标签 {} 个", postId, postTagSet.size());
         return true;
+    }
+
+    @Override
+    public List<TagVO> getTagVOList(Long postId) {
+        return baseMapper.selectTagVOListByPostId(postId);
     }
 }
 

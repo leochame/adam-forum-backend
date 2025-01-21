@@ -43,7 +43,7 @@ create table if not exists tag
 (
     id          bigint auto_increment primary key  not null comment 'id',
     user_id     bigint                             not null comment '创建用户',
-    name        varchar(128)                       not null comment '帖子名称',
+    name        varchar(128)                       not null comment '标签名称',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment '标签表' collate = utf8mb4_unicode_ci;

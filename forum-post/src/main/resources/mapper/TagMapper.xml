@@ -13,7 +13,16 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,name,
+        id,user_id,`name`,
         create_time,update_time
     </sql>
+
+    <select id="selectTagVOListByPostId" parameterType="Long" resultType="com.adam.post.model.vo.TagVO">
+        SELECT t.id      AS id,
+               t.user_id AS userId,
+               t.name    AS name
+        FROM tag t
+                 INNER JOIN post_tag pt ON t.id = pt.tag_id
+        WHERE pt.post_id = #{postId}
+    </select>
 </mapper>

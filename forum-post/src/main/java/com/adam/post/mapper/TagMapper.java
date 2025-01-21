@@ -1,7 +1,11 @@
 package com.adam.post.mapper;
 
 import com.adam.post.model.entity.Tag;
+import com.adam.post.model.vo.TagVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author chenjiahan
@@ -11,6 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface TagMapper extends BaseMapper<Tag> {
 
+    List<TagVO> selectTagVOListByPostId(@Param("postId") Long postId);
 }
 
 

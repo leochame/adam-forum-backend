@@ -5,6 +5,7 @@ import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
+import com.adam.common.database.constant.DatabaseConstant;
 import com.adam.post.mapper.PostMapper;
 import com.adam.post.mapper.PostTagMapper;
 import com.adam.post.model.entity.Post;
@@ -12,14 +13,19 @@ import com.adam.post.model.entity.PostImage;
 import com.adam.post.model.entity.PostTag;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
+import com.adam.post.model.vo.PostVO;
+import com.adam.post.model.vo.TagVO;
 import com.adam.post.service.PostImageService;
 import com.adam.post.service.PostService;
 import com.adam.post.service.TagService;
+import com.adam.service.user.bo.UserBasicInfoBO;
+import com.adam.service.user.service.UserBasicRpcService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +58,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 
     @Resource
     private PostTagMapper postTagMapper;
+
+    @DubboReference
+    private UserBasicRpcService userBasicRpcService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -136,8 +145,33 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 
         return true;
     }
+
+    @Override
+    public PostVO getPostVO(Long postId) {
+        // todo 缓存改造
+        Post post = baseMapper.selectOne(Wrappers.<Post>lambdaQuery()
+                .eq(Post::getId, postId)
+                .last(DatabaseConstant.LIMIT_ONE));
+        ThrowUtils.throwIf(post == null, ErrorCodeEnum.NOT_FOUND_ERROR, "帖子信息不存在");
+
+        PostVO postVO = new PostVO();
+        BeanUtils.copyProperties(post, postVO);
+
+        // 获取图片
+        List<PostImage> postImageList = postImageService.list(Wrappers.<PostImage>lambdaQuery()
+                .eq(PostImage::getPostId, postId)
+                .select(PostImage::getImage));
+        List<String> imageList = postImageList.stream().map(PostImage::getImage).toList();
+        postVO.setImageList(imageList);
+
+        // 获取标签
+        List<TagVO> tagVOList = tagService.getTagVOList(postId);
+        postVO.setTagList(tagVOList);
+
+        // 获取帖子创建者信息
+        UserBasicInfoBO userBasicInfoBO = userBasicRpcService.getUserBasicInfoByUserId(post.getUserId());
+        postVO.setCreateUser(userBasicInfoBO);
+
+        return postVO;
+    }
 }
-
-
-
-

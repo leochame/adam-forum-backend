@@ -1,6 +1,7 @@
 package com.adam.post.service;
 
 import com.adam.post.model.entity.Tag;
+import com.adam.post.model.vo.TagVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -38,4 +39,12 @@ public interface TagService extends IService<Tag> {
      * @return 关联成功
      */
     boolean associatePostTagList(Long postId, List<Long> tagIdList, Long currentUserId);
+
+    /**
+     * 获取帖子下所有 tag 详细列表
+     *
+     * @param postId 帖子 id
+     * @return 标签详细列表
+     */
+    List<TagVO> getTagVOList(Long postId);
 }

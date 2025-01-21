@@ -8,16 +8,15 @@ import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
+import com.adam.post.model.vo.PostVO;
 import com.adam.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author <a href="https://github.com/IceProgramer">chenjiahan</a>
@@ -87,5 +86,23 @@ public class PostController {
         boolean result = postService.deletePost(deleteRequest.getId());
 
         return ResultUtils.success(result);
+    }
+
+
+    /**
+     * 根据 id 获取帖子 VO
+     *
+     * @return 帖子 VO
+     */
+    @GetMapping("/{id}")
+    @Operation(summary = "根据 id 获取帖子信息")
+    public BaseResponse<PostVO> getPostVO(@PathVariable("id") Long id) {
+        if (id == null || id <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "获取帖子 id 不能为空");
+        }
+
+        PostVO postVO = postService.getPostVO(id);
+
+        return ResultUtils.success(postVO);
     }
 }
