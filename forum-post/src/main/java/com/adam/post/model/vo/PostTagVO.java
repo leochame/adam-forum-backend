@@ -1,5 +1,6 @@
 package com.adam.post.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -14,13 +15,20 @@ import java.io.Serializable;
  */
 @Data
 @Schema(name = "标签视图类")
-public class TagVO implements Serializable {
+public class PostTagVO implements Serializable {
 
     /**
      * id
      */
     @Schema(description = "标签 id")
     private Long id;
+
+
+    /**
+     * 帖子 id
+     */
+    @JsonIgnore
+    private Long postId;
 
     /**
      * 创建用户 id

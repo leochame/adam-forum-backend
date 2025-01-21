@@ -11,6 +11,7 @@
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="thumbNum" column="thumb_num" jdbcType="INTEGER"/>
             <result property="favourNum" column="favour_num" jdbcType="INTEGER"/>
+            <result property="commentNum" column="comment_num" jdbcType="INTEGER"/>
             <result property="address" column="address" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -19,7 +20,7 @@
 
     <sql id="Base_Column_List">
         id,user_id,title,
-        content,thumb_num,favour_num,
+        content,thumb_num,favour_num,comment_num,
         address,create_time,update_time,
         is_delete
     </sql>

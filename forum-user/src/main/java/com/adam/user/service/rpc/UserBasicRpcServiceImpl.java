@@ -13,6 +13,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * 用户基础信息调用 - RPC 实现
@@ -41,5 +44,20 @@ public class UserBasicRpcServiceImpl implements UserBasicRpcService {
         BeanUtils.copyProperties(user, userBasicInfoBO);
 
         return userBasicInfoBO;
+    }
+
+    @Override
+    public List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(List<Long> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)) {
+            throw new BusinessRpcException(ErrorCodeEnum.PARAMS_ERROR, "用户 id 列表错误");
+        }
+
+        List<User> userList = userMapper.selectList(Wrappers.<User>lambdaQuery()
+                .in(User::getId, userIdList));
+        return userList.stream().map(user -> {
+            UserBasicInfoBO userBasicInfoBO = new UserBasicInfoBO();
+            BeanUtils.copyProperties(user, userBasicInfoBO);
+            return userBasicInfoBO;
+        }).toList();
     }
 }

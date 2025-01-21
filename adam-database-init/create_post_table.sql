@@ -18,6 +18,7 @@ create table if not exists post
     content     text                               null comment '内容',
     thumb_num   int      default 0                 not null comment '点赞数',
     favour_num  int      default 0                 not null comment '收藏数',
+    comment_num int      default 0                 not null comment '评论数',
     address     varchar(128)                       null comment '发布地点',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
@@ -51,9 +52,9 @@ create table if not exists tag
 -- 帖子标签关联表
 create table if not exists post_tag
 (
-    id         bigint auto_increment comment 'id' primary key,
-    post_id    bigint                             not null comment '帖子 id',
-    tag_id     bigint                             not null comment '标签 id',
+    id          bigint auto_increment comment 'id' primary key,
+    post_id     bigint                             not null comment '帖子 id',
+    tag_id      bigint                             not null comment '标签 id',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_post_id (post_id),
@@ -75,9 +76,9 @@ create table if not exists post_thumb
 -- 帖子收藏表
 create table if not exists post_favour
 (
-    id         bigint auto_increment comment 'id' primary key,
-    post_id    bigint                             not null comment '帖子 id',
-    user_id    bigint                             not null comment '创建用户 id',
+    id          bigint auto_increment comment 'id' primary key,
+    post_id     bigint                             not null comment '帖子 id',
+    user_id     bigint                             not null comment '创建用户 id',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_post_id (post_id),

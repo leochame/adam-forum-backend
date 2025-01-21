@@ -4,13 +4,15 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 帖子表
+ *
  * @TableName post
  */
-@TableName(value ="post")
+@TableName(value = "post")
 @Data
 public class Post implements Serializable {
     /**
@@ -43,6 +45,11 @@ public class Post implements Serializable {
      * 收藏数
      */
     private Integer favourNum;
+
+    /**
+     * 评论数
+     */
+    private Integer commentNum;
 
     /**
      * 发布地点

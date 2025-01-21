@@ -8,8 +8,10 @@ import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
+import com.adam.post.model.request.post.PostQueryRequest;
 import com.adam.post.model.vo.PostVO;
 import com.adam.post.service.PostService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -104,5 +106,23 @@ public class PostController {
         PostVO postVO = postService.getPostVO(id);
 
         return ResultUtils.success(postVO);
+    }
+
+    /**
+     * 分页搜索帖子信息
+     *
+     * @param postQueryRequest 帖子搜索请求类
+     * @return 帖子分页
+     */
+    @PostMapping("/page")
+    @Operation(summary = "分页搜索帖子信息")
+    public BaseResponse<Page<PostVO>> pagePostVO(@RequestBody PostQueryRequest postQueryRequest) {
+        long pageSize = postQueryRequest.getPageSize();
+        if (pageSize > 50) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "每页最大不超过50");
+        }
+        Page<PostVO> postVOPage = postService.pagePostVO(postQueryRequest);
+
+        return ResultUtils.success(postVOPage);
     }
 }

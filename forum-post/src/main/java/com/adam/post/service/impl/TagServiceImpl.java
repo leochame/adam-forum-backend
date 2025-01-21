@@ -10,7 +10,7 @@ import com.adam.post.mapper.TagMapper;
 import com.adam.post.model.entity.Post;
 import com.adam.post.model.entity.PostTag;
 import com.adam.post.model.entity.Tag;
-import com.adam.post.model.vo.TagVO;
+import com.adam.post.model.vo.PostTagVO;
 import com.adam.post.service.TagService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,8 +107,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     }
 
     @Override
-    public List<TagVO> getTagVOList(Long postId) {
+    public List<PostTagVO> getTagVOListByPostId(Long postId) {
         return baseMapper.selectTagVOListByPostId(postId);
+    }
+
+    @Override
+    public List<PostTagVO> getTagVOListByPostIdSet(Set<Long> postIdList) {
+        return baseMapper.selectTagVOListByPostIdList(postIdList);
     }
 }
 

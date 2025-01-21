@@ -1,6 +1,5 @@
 package com.adam.post.model.vo;
 
-import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.service.user.bo.UserBasicInfoBO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -60,7 +59,7 @@ public class PostVO implements Serializable {
      * 关联标签列表
      */
     @Schema(description = "帖子关联标签列表")
-    private List<TagVO> tagList;
+    private List<PostTagVO> tagList;
 
     /**
      * 图片列表
@@ -73,6 +72,18 @@ public class PostVO implements Serializable {
      */
     @Schema(description = "帖子创建者基础信息")
     private UserBasicInfoBO createUser;
+
+    /**
+     * 是否收藏
+     */
+    @Schema(description = "用户是否收藏", defaultValue = "false")
+    private Boolean hasFavour = false;
+
+    /**
+     * 是否点赞
+     */
+    @Schema(description = "用户是否点赞", defaultValue = "false")
+    private Boolean hasThumb = false;
 
     @Serial
     private static final long serialVersionUID = 90132243746206497L;

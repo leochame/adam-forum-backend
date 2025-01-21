@@ -5,24 +5,39 @@
 <mapper namespace="com.adam.post.mapper.TagMapper">
 
     <resultMap id="BaseResultMap" type="com.adam.post.model.entity.Tag">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,`name`,
+        id
+        ,user_id,`name`,
         create_time,update_time
     </sql>
 
-    <select id="selectTagVOListByPostId" parameterType="Long" resultType="com.adam.post.model.vo.TagVO">
+    <select id="selectTagVOListByPostId" parameterType="Long" resultType="com.adam.post.model.vo.PostTagVO">
         SELECT t.id      AS id,
                t.user_id AS userId,
                t.name    AS name
-        FROM tag t
-                 INNER JOIN post_tag pt ON t.id = pt.tag_id
+            pt.name AS postId
+        FROM tag t INNER JOIN post_tag pt ON t.id = pt.tag_id
         WHERE pt.post_id = #{postId}
     </select>
+
+    <select id="selectTagVOListByPostIdList" resultType="com.adam.post.model.vo.PostTagVO">
+        SELECT t.id AS id,
+        t.user_id AS userId,
+        t.name AS name,
+        pt.post_id AS postId
+        FROM tag t
+        INNER JOIN post_tag pt ON t.id = pt.tag_id
+        WHERE pt.post_id IN
+        <foreach item="postId" collection="postIds" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
 </mapper>

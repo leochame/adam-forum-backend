@@ -3,7 +3,9 @@ package com.adam.post.service;
 import com.adam.post.model.entity.Post;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
+import com.adam.post.model.request.post.PostQueryRequest;
 import com.adam.post.model.vo.PostVO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,4 +49,12 @@ public interface PostService extends IService<Post> {
      * @return 帖子信息
      */
     PostVO getPostVO(Long postId);
+
+    /**
+     * 分页帖子获取
+     *
+     * @param postQueryRequest 帖子搜索请求
+     * @return 帖子分页
+     */
+    Page<PostVO> pagePostVO(PostQueryRequest postQueryRequest);
 }
