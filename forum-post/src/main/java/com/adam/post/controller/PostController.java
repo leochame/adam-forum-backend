@@ -3,6 +3,7 @@ package com.adam.post.controller;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
+import com.adam.common.core.request.DeleteRequest;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.post.PostAddRequest;
@@ -38,7 +39,7 @@ public class PostController {
      * @return 帖子 id
      */
     @PostMapping("/add")
-    @Operation(summary = "发布帖子接口")
+    @Operation(summary = "发布帖子")
     public BaseResponse<Long> addPost(@Valid @RequestBody PostAddRequest postAddRequest) {
         if (postAddRequest == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "发布帖子内容为空！");
@@ -56,7 +57,7 @@ public class PostController {
      * @return 编辑成功
      */
     @PostMapping("/edit")
-    @Operation(summary = "编辑帖子内容接口")
+    @Operation(summary = "编辑帖子内容")
     public BaseResponse<Boolean> editPost(@Valid @RequestBody PostEditRequest postEditRequest) {
         ThrowUtils.throwIf(postEditRequest == null, ErrorCodeEnum.PARAMS_ERROR, "编辑帖子内容为空！");
         if (postEditRequest.getId() == null || postEditRequest.getId() <= 0) {
@@ -64,6 +65,26 @@ public class PostController {
         }
 
         boolean result = postService.editPost(postEditRequest);
+
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 删除帖子接口
+     *
+     * @param deleteRequest 删除请求
+     * @return 删除成功
+     */
+    @PostMapping("/delete")
+    @Operation(summary = "删除帖子")
+    public BaseResponse<Boolean> deletePost(@RequestBody DeleteRequest deleteRequest) {
+        ThrowUtils.throwIf(deleteRequest == null, ErrorCodeEnum.PARAMS_ERROR);
+        Long id = deleteRequest.getId();
+        if (id == null || id <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "删除帖子 id 错误！");
+        }
+
+        boolean result = postService.deletePost(deleteRequest.getId());
 
         return ResultUtils.success(result);
     }

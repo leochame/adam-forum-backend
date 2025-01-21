@@ -30,4 +30,12 @@ public interface PostService extends IService<Post> {
      * @return 编辑成功
      */
     boolean editPost(PostEditRequest postEditRequest);
+
+    /**
+     * 删除帖子
+     *
+     * @param postId 帖子 id
+     * @return 删除成功
+     */
+    boolean deletePost(Long postId);
 }

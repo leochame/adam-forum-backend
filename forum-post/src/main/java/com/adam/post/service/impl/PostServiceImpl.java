@@ -5,21 +5,25 @@ import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
+import com.adam.post.mapper.PostMapper;
+import com.adam.post.mapper.PostTagMapper;
+import com.adam.post.model.entity.Post;
+import com.adam.post.model.entity.PostImage;
+import com.adam.post.model.entity.PostTag;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
 import com.adam.post.service.PostImageService;
+import com.adam.post.service.PostService;
 import com.adam.post.service.TagService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.adam.post.model.entity.Post;
-import com.adam.post.service.PostService;
-import com.adam.post.mapper.PostMapper;
 import com.google.gson.Gson;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -35,16 +39,19 @@ import java.util.Objects;
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         implements PostService {
 
-    @Resource
-    private PostMapper postMapper;
-
     private static final Gson GSON = new Gson();
 
     @Resource
     private PostImageService postImageService;
 
     @Resource
+    private TransactionTemplate transactionTemplate;
+
+    @Resource
     private TagService tagService;
+
+    @Resource
+    private PostTagMapper postTagMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -79,7 +86,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
     public boolean editPost(PostEditRequest postEditRequest) {
         // 判断是否是创建者
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
-        Post originalPost = postMapper.selectOne(Wrappers.<Post>lambdaQuery()
+        Post originalPost = baseMapper.selectOne(Wrappers.<Post>lambdaQuery()
                 .eq(Post::getId, postEditRequest.getId())
                 .select(Post::getUserId));
         ThrowUtils.throwIf(originalPost == null, ErrorCodeEnum.NOT_FOUND_ERROR, "原帖已不存在！");
@@ -90,7 +97,43 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 
         Post post = new Post();
         BeanUtils.copyProperties(postEditRequest, post);
-        log.info("更新帖子成功 「{}」，创建用户信息：「{}」", GSON.toJson(post), GSON.toJson(currentUser));
+        log.info("更新帖子成功 「{}」，创建用户信息：「{}」", GSON.toJson(postEditRequest), GSON.toJson(currentUser));
+        return true;
+    }
+
+    @Override
+    public boolean deletePost(Long postId) {
+        // 获取当前登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        Long userId = currentUser.getId();
+        Post originalPost = baseMapper.selectOne(Wrappers.<Post>lambdaQuery()
+                .eq(Post::getId, postId)
+                .select(Post::getUserId));
+        ThrowUtils.throwIf(originalPost == null, ErrorCodeEnum.NOT_FOUND_ERROR, "原帖已不存在！");
+
+        if (!Objects.equals(originalPost.getUserId(), userId)) {
+            throw new BusinessException(ErrorCodeEnum.NO_AUTH_ERROR, "仅帖子创作者可删除帖子内容");
+        }
+
+        // 事务删除所有信息
+        transactionTemplate.execute(status -> {
+            // 删除原帖信息
+            baseMapper.deleteById(postId);
+
+            // 删除帖子图片信息
+            postImageService.remove(Wrappers.<PostImage>lambdaQuery()
+                    .eq(PostImage::getPostId, postId));
+
+            // 删除帖子标签信息
+            postTagMapper.delete(Wrappers.<PostTag>lambdaQuery()
+                    .eq(PostTag::getPostId, postId));
+            return Boolean.TRUE;
+
+            // todo 删除点赞信息
+        });
+
+        log.info("删除 帖子「{}」，创建者 「{}」", postId, GSON.toJson(currentUser));
+
         return true;
     }
 }
