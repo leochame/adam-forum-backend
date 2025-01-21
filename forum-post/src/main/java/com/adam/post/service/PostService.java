@@ -2,6 +2,7 @@ package com.adam.post.service;
 
 import com.adam.post.model.entity.Post;
 import com.adam.post.model.request.post.PostAddRequest;
+import com.adam.post.model.request.post.PostEditRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.validation.Valid;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,4 +22,12 @@ public interface PostService extends IService<Post> {
      */
     @Transactional(rollbackFor = Exception.class)
     long addPost(PostAddRequest postAddRequest);
+
+    /**
+     * 编辑帖子
+     *
+     * @param postEditRequest 帖子编辑内容
+     * @return 编辑成功
+     */
+    boolean editPost(PostEditRequest postEditRequest);
 }

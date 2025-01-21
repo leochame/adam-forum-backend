@@ -1,10 +1,15 @@
 package com.adam.post.service.impl;
 
 import com.adam.common.auth.security.SecurityContext;
+import com.adam.common.core.constant.ErrorCodeEnum;
+import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.post.model.request.post.PostAddRequest;
+import com.adam.post.model.request.post.PostEditRequest;
 import com.adam.post.service.PostImageService;
 import com.adam.post.service.TagService;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.adam.post.model.entity.Post;
 import com.adam.post.service.PostService;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author chenjiahan
@@ -28,6 +34,9 @@ import java.util.List;
 @Slf4j
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         implements PostService {
+
+    @Resource
+    private PostMapper postMapper;
 
     private static final Gson GSON = new Gson();
 
@@ -64,6 +73,25 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         log.info("发布帖子成功 「{}」，创建用户信息：「{}」", GSON.toJson(post), GSON.toJson(currentUser));
         return post.getId();
 
+    }
+
+    @Override
+    public boolean editPost(PostEditRequest postEditRequest) {
+        // 判断是否是创建者
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        Post originalPost = postMapper.selectOne(Wrappers.<Post>lambdaQuery()
+                .eq(Post::getId, postEditRequest.getId())
+                .select(Post::getUserId));
+        ThrowUtils.throwIf(originalPost == null, ErrorCodeEnum.NOT_FOUND_ERROR, "原帖已不存在！");
+
+        if (!Objects.equals(originalPost.getUserId(), currentUser.getId())) {
+            throw new BusinessException(ErrorCodeEnum.NO_AUTH_ERROR, "仅帖子创作者可编辑帖子内容");
+        }
+
+        Post post = new Post();
+        BeanUtils.copyProperties(postEditRequest, post);
+        log.info("更新帖子成功 「{}」，创建用户信息：「{}」", GSON.toJson(post), GSON.toJson(currentUser));
+        return true;
     }
 }
 

@@ -6,15 +6,20 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * @author <a href="https://github.com/IceProgramer">chenjiahan</a>
- * @create 2025/1/20 19:43
+ * 帖子表
+ *
+ * @TableName post
  */
 @Data
-@Schema(name = "帖子发布请求", description = "用户发布帖子请求")
-public class PostAddRequest implements Serializable {
+@Schema(name = "帖子更新请求", description = "用户更新帖子")
+public class PostEditRequest implements Serializable {
+    /**
+     * id
+     */
+    @Schema(description = "帖子 id", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long id;
 
     /**
      * 标题
@@ -37,21 +42,6 @@ public class PostAddRequest implements Serializable {
     @Size(max = 50, message = "发布地点信息不能超过 50 个字")
     private String address;
 
-    /**
-     * 关联标签列表
-     */
-    @Schema(description = "帖子关联标签列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    @Size(max = 20, message = "帖子最多关联 20 个标签")
-    private List<Long> tagIdList;
-
-    /**
-     * 图片列表
-     */
-    @Schema(description = "图片列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    @Size(max = 9, message = "帖子最多关联 9 张图片")
-    private List<String> imageList;
-
-
     @Serial
-    private static final long serialVersionUID = -5786828601757626069L;
+    private static final long serialVersionUID = 1L;
 }
