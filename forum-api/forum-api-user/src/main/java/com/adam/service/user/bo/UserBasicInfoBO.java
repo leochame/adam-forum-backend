@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 用户基础信息 （RPC 调用）
@@ -22,31 +21,31 @@ public class UserBasicInfoBO implements Serializable {
     /**
      * id
      */
+    @Schema(description = "用户 id")
     private Long id;
 
     /**
      * 用户昵称
      */
+    @Schema(description = "用户昵称")
     private String username;
-
-    /**
-     * 账号
-     */
-    private String account;
 
     /**
      * 性别 0 - 女｜1 - 男
      */
+    @Schema(description = "性别")
     private Integer gender;
 
     /**
      * 用户头像
      */
+    @Schema(description = "用户头像")
     private String userAvatar;
 
     /**
      * 用户身份
      */
+    @Schema(description = "用户身份")
     private String userRole;
 
 

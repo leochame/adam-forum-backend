@@ -61,7 +61,9 @@
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>

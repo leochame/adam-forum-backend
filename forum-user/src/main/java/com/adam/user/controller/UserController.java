@@ -9,9 +9,9 @@ import com.adam.user.model.dto.user.UserAccountRegisterRequest;
 import com.adam.user.model.dto.user.UserEditRequest;
 import com.adam.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +51,7 @@ public class UserController {
         long userId = userService.userRegisterByAccount(userAccount, userPassword, checkPassword);
 
         return ResultUtils.success(userId);
-        
+
     }
 
     /**
@@ -62,7 +62,7 @@ public class UserController {
      */
     @PostMapping("/edit")
     @Operation(summary = "用户编辑个人基础信息")
-    public BaseResponse<Boolean> editUser(@RequestBody UserEditRequest userEditRequest) {
+    public BaseResponse<Boolean> editUser(@Valid @RequestBody UserEditRequest userEditRequest) {
         ThrowUtils.throwIf(ObjectUtils.isEmpty(userEditRequest), ErrorCodeEnum.PARAMS_ERROR, "用户编辑个人信息不能为空");
         Long userId = userEditRequest.getUserId();
         if (userId == null || userId <= 0) {

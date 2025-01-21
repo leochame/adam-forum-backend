@@ -146,6 +146,8 @@ public class TokenClient {
             userId = payload.get(JwtConstant.CLAIMS_USER_ID, String.class);
             device = payload.get(JwtConstant.CLAIMS_DEVICE, String.class);
             expireDate = payload.getExpiration();
+        } catch (ExpiredJwtException e) {
+            throw new BusinessException(ErrorCodeEnum.TOKEN_EXPIRE_ERROR);
         } catch (Exception e) {
             log.error("token 解析错误: {}", e.getMessage());
             throw new BusinessException(ErrorCodeEnum.TOKEN_PARSE_ERROR);
