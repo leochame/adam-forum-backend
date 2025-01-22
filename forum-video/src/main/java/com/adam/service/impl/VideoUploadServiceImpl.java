@@ -1,45 +1,27 @@
 package com.adam.service.impl;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.io.IoUtil;
 import com.adam.common.core.constant.ErrorCodeEnum;
+import com.adam.common.core.constant.VedioConstants;
 import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.request.UploadPartDTO;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.config.MinIOConfigProperties;
 import com.adam.processors.VideoChunkProcessor;
-import com.adam.service.FileStorageService;
 import com.adam.service.VideoUploadService;
 import com.adam.utils.VideoFileUtils;
-import com.adam.vedio.constants.UploadPart;
 import com.adam.vedio.constants.UploadStateManager;
-import com.admin.video.constants.VedioConstants;
-import com.admin.video.dtos.UploadPartDTO;
-import io.netty.handler.codec.EncoderException;
-import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.ScreenExtractor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import static com.adam.vedio.constants.UploadStateManager.uploadPartMap;
-import static com.adam.vedio.constants.UploadStateManager.uploadTasksMap;
-import static com.admin.video.constants.VedioConstants.VIDEO_TYPE_MP4;
 
 @Service
 @Slf4j

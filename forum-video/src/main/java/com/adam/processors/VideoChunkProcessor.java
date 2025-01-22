@@ -4,9 +4,9 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.IoUtil;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.request.UploadPartDTO;
 import com.adam.service.FileStorageService;
 import com.adam.vedio.constants.UploadPart;
-import com.admin.video.dtos.UploadPartDTO;
 import io.netty.handler.codec.EncoderException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.adam.common.core.constant.VedioConstants.VIDEO_TYPE_MP4;
 import static com.adam.vedio.constants.UploadStateManager.uploadPartMap;
-import static com.admin.video.constants.VedioConstants.VIDEO_TYPE_MP4;
 
 @Component
 @Slf4j

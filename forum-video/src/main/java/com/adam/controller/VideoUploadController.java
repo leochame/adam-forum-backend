@@ -1,8 +1,8 @@
 package com.adam.controller;
 
+import com.adam.common.core.request.UploadPartDTO;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.service.VideoUploadService;
-import com.admin.video.dtos.UploadPartDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

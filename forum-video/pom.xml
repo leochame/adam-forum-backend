@@ -40,12 +40,6 @@
         </dependency>
         <dependency>
             <groupId>com.adam</groupId>
-            <artifactId>forum-model</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.adam</groupId>
             <artifactId>forum-file</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

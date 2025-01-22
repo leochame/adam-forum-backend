@@ -1,4 +1,4 @@
-package com.admin.video.constants;
+package com.adam.common.core.constant;
 
 public class VedioConstants {
     public final  static  String VIDEO_TYPE_MP4 = "mp4";

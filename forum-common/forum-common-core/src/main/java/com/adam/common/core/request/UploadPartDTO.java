@@ -1,4 +1,4 @@
-package com.admin.video.dtos;
+package com.adam.common.core.request;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
