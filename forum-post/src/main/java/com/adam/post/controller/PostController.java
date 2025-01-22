@@ -1,19 +1,22 @@
 package com.adam.post.controller;
 
+import com.adam.common.auth.security.SecurityContext;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.request.DeleteRequest;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.post.PostAddRequest;
 import com.adam.post.model.request.post.PostEditRequest;
 import com.adam.post.model.request.post.PostQueryRequest;
+import com.adam.post.model.request.post.PostThumbAddRequest;
 import com.adam.post.model.vo.PostVO;
 import com.adam.post.service.PostService;
+import com.adam.post.service.PostThumbService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -32,6 +35,9 @@ public class PostController {
 
     @Resource
     private PostService postService;
+
+    @Resource
+    private PostThumbService postThumbService;
 
     /**
      * 用户发布帖子接口
@@ -124,5 +130,24 @@ public class PostController {
         Page<PostVO> postVOPage = postService.pagePostVO(postQueryRequest);
 
         return ResultUtils.success(postVOPage);
+    }
+
+    /**
+     * 点赞 / 取消点赞
+     *
+     * @param postThumbAddRequest 帖子点赞请求
+     * @return resultNum 本次点赞变化数
+     */
+    @PostMapping("/thumb")
+    @Operation(summary = "点赞 / 取消点赞")
+    public BaseResponse<Integer> doThumb(@RequestBody PostThumbAddRequest postThumbAddRequest) {
+        if (postThumbAddRequest == null || postThumbAddRequest.getPostId() <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "Thumb Post Id ERROR!");
+        }
+        // 登录才能点赞
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        long postId = postThumbAddRequest.getPostId();
+        int result = postThumbService.doPostThumb(postId, currentUser);
+        return ResultUtils.success(result);
     }
 }

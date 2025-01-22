@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Schema(name = "帖子分野查询类", description = "用户通过查询参数获取分页信息")
+@Schema(name = "帖子分页查询类", description = "用户通过查询参数获取分页信息")
 public class PostQueryRequest extends PageRequest implements Serializable {
 
     /**
