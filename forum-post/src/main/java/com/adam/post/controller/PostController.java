@@ -8,11 +8,9 @@ import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.request.DeleteRequest;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
-import com.adam.post.model.request.post.PostAddRequest;
-import com.adam.post.model.request.post.PostEditRequest;
-import com.adam.post.model.request.post.PostQueryRequest;
-import com.adam.post.model.request.post.PostThumbAddRequest;
+import com.adam.post.model.request.post.*;
 import com.adam.post.model.vo.PostVO;
+import com.adam.post.service.PostFavourService;
 import com.adam.post.service.PostService;
 import com.adam.post.service.PostThumbService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -38,6 +36,9 @@ public class PostController {
 
     @Resource
     private PostThumbService postThumbService;
+
+    @Resource
+    private PostFavourService postFavourService;
 
     /**
      * 用户发布帖子接口
@@ -136,18 +137,37 @@ public class PostController {
      * 点赞 / 取消点赞
      *
      * @param postThumbAddRequest 帖子点赞请求
-     * @return resultNum 本次点赞变化数
+     * @return 本次点赞变化数 (1 - 点赞成功/-1 - 取消点赞成功)
      */
     @PostMapping("/thumb")
     @Operation(summary = "点赞 / 取消点赞")
     public BaseResponse<Integer> doThumb(@RequestBody PostThumbAddRequest postThumbAddRequest) {
         if (postThumbAddRequest == null || postThumbAddRequest.getPostId() <= 0) {
-            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "Thumb Post Id ERROR!");
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "帖子 id 错误！");
         }
         // 登录才能点赞
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
         long postId = postThumbAddRequest.getPostId();
         int result = postThumbService.doPostThumb(postId, currentUser);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 收藏 / 取消收藏
+     *
+     * @param postFavourAddRequest 帖子收藏请求
+     * @return 本次收藏变化数 (1 - 收藏成功/-1 - 取消收藏成功)
+     */
+    @PostMapping("/favour")
+    @Operation(summary = "收藏 / 取消收藏")
+    public BaseResponse<Integer> doPostFavour(@RequestBody PostFavourAddRequest postFavourAddRequest) {
+        if (postFavourAddRequest == null || postFavourAddRequest.getPostId() <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "帖子 id 错误！");
+        }
+        // 登录才能操作
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        long postId = postFavourAddRequest.getPostId();
+        int result = postFavourService.doPostFavour(postId, currentUser);
         return ResultUtils.success(result);
     }
 }
