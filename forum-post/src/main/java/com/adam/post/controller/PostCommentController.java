@@ -2,9 +2,11 @@ package com.adam.post.controller;
 
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
+import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.comment.CommentAddRequest;
+import com.adam.post.model.request.comment.CommentDeleteRequest;
 import com.adam.post.service.PostCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,13 +34,13 @@ public class PostCommentController {
     private PostCommentService postCommentService;
 
     /**
-     * 发布帖子评论接口
+     * 发布评论接口
      *
      * @param commentAddRequest 帖子评论请求
      * @return 评论 id
      */
     @PostMapping("/add")
-    @Operation(summary = "发布帖子评论")
+    @Operation(summary = "发布评论")
     public BaseResponse<Long> addPostComment(@Valid @RequestBody CommentAddRequest commentAddRequest) {
         if (commentAddRequest == null) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "评论请求不能为空！");
@@ -47,5 +49,25 @@ public class PostCommentController {
         Long postId = postCommentService.addComment(commentAddRequest);
 
         return ResultUtils.success(postId);
+    }
+
+    /**
+     * 删除评论接口
+     *
+     * @param commentDeleteRequest 删除请求
+     * @return 删除评论数
+     */
+    @PostMapping("/delete")
+    @Operation(summary = "删除评论")
+    public BaseResponse<Integer> deletePostComment(@RequestBody CommentDeleteRequest commentDeleteRequest) {
+        ThrowUtils.throwIf(commentDeleteRequest == null, ErrorCodeEnum.PARAMS_ERROR, "删除请求不能为空！");
+        Long firstCommentId = commentDeleteRequest.getFirstCommentId();
+        if (firstCommentId == null || firstCommentId <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "删除评论 id 错误！");
+        }
+
+        int removeNum = postCommentService.deleteComment(firstCommentId, commentDeleteRequest.getSecondCommentId());
+
+        return ResultUtils.success(removeNum);
     }
 }

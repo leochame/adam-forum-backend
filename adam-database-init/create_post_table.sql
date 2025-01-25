@@ -85,24 +85,6 @@ create table if not exists post_favour
     index idx_userId (user_id)
 ) comment '帖子收藏表';
 
--- 帖子评论表
-create table if not exists post_comment
-(
-    id          bigint auto_increment primary key  not null comment '评论 id',
-    post_id     bigint                             not null comment '帖子 id',
-    user_id     bigint                             not null comment '评论用户 id',
-    parent_id   bigint                             null comment '父评论 id，支持嵌套评论，顶级评论为 null',
-    content     varchar(1024)                      not null comment '评论内容',
-    thumb_num   int      default 0                 not null comment '点赞数',
-    reply_num   int      default 0                 not null comment '回复数',
-    create_time datetime default CURRENT_TIMESTAMP not null comment '评论时间',
-    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    is_delete   tinyint  default 0                 not null comment '是否删除',
-    index idx_post_id (post_id),
-    index idx_user_id (user_id),
-    index idx_parent_id (parent_id)
-) comment '帖子评论表' collate = utf8mb4_unicode_ci;
-
 -- 评论点赞表
 create table if not exists comment_thumb
 (

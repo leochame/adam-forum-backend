@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 /**
  * 帖子评论表
+ *
  * @TableName post_comment
  */
 @Data
@@ -23,10 +24,15 @@ public class CommentAddRequest implements Serializable {
     private Long postId;
 
     /**
-     * 父评论 id，支持嵌套评论，顶级评论为 null
+     * 一级评论 id，为 Null 则为一级评论
+     */
+    private Long commentId;
+
+    /**
+     * 回复 id，支持嵌套评论，顶级评论为 null
      */
     @Schema(description = "回复帖子 id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Long parentId;
+    private Long replyId;
 
     /**
      * 评论内容
