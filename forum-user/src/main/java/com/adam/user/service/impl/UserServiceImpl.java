@@ -10,7 +10,7 @@ import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.utils.RandomAvatarUtil;
 import com.adam.common.database.constant.DatabaseConstant;
-import com.adam.user.model.dto.user.UserEditRequest;
+import com.adam.user.model.request.user.UserEditRequest;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.adam.user.model.entity.User;

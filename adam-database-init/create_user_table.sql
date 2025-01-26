@@ -28,3 +28,15 @@ create table if not exists user
     update_time datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     is_delete   tinyint      default 0                 not null comment '是否删除'
 ) comment '用户' collate = utf8mb4_unicode_ci;
+
+-- 用户关注表
+create table if not exists user_follow
+(
+    id          bigint primary key                 not null comment 'id',
+    followed_id bigint                             not null comment '被关注者 id',
+    user_id     bigint                             not null comment '关注者 id',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    is_delete   tinyint  default 0                 not null comment '是否删除',
+    index idx_followed_id (followed_id),
+    index idx_user_id (user_id)
+) comment '用户关注表' collate = utf8mb4_unicode_ci;

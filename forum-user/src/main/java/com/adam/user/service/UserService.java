@@ -1,6 +1,6 @@
 package com.adam.user.service;
 
-import com.adam.user.model.dto.user.UserEditRequest;
+import com.adam.user.model.request.user.UserEditRequest;
 import com.adam.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
