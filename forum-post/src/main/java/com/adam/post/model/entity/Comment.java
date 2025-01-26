@@ -41,11 +41,6 @@ public class Comment implements Serializable {
     private String content;
 
     /**
-     * 点赞数
-     */
-    private int thumbNum;
-
-    /**
      * 创建时间
      */
     private Date createTime;

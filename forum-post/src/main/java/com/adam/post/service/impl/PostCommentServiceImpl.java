@@ -9,11 +9,13 @@ import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.database.constant.DatabaseConstant;
 import com.adam.post.mapper.PostMapper;
 import com.adam.post.model.entity.Comment;
+import com.adam.post.model.entity.CommentThumb;
 import com.adam.post.model.entity.Post;
 import com.adam.post.model.request.comment.CommentAddRequest;
 import com.adam.post.model.request.comment.CommentQueryRequest;
 import com.adam.post.model.vo.PostCommentVO;
 import com.adam.post.repository.CommentRepository;
+import com.adam.post.repository.CommentThumbRepository;
 import com.adam.post.service.PostCommentService;
 import com.adam.service.user.bo.UserBasicInfoBO;
 import com.adam.service.user.service.UserBasicRpcService;
@@ -51,6 +53,9 @@ public class PostCommentServiceImpl implements PostCommentService {
     private CommentRepository commentRepository;
 
     @Resource
+    private CommentThumbRepository commentThumbRepository;
+
+    @Resource
     private MongoTemplate mongoTemplate;
 
     @DubboReference
@@ -81,7 +86,6 @@ public class PostCommentServiceImpl implements PostCommentService {
             comment.setPostId(commentAddRequest.getPostId());
             comment.setUserId(currentUser.getId());
             comment.setContent(content);
-            comment.setThumbNum(0);
             comment.setCreateTime(new Date());
             comment.setReplies(Collections.emptyList());
             commentRepository.save(comment);
@@ -171,23 +175,47 @@ public class PostCommentServiceImpl implements PostCommentService {
         Comment comment = commentRepository.getCommentById(commentId);
         ThrowUtils.throwIf(comment == null, ErrorCodeEnum.NOT_FOUND_ERROR, "获取评论信息不存在！");
         List<Comment.ReplyComment> replyList = comment.getReplies();
+
+        Set<Long> userIdSet = new HashSet<>();
+        Set<Long> commentIdSet = new HashSet<>();
         // 获取所有二级评论用户 id
-        Set<Long> userIdList = replyList.stream()
-                .map(Comment.ReplyComment::getUserId)
-                .collect(Collectors.toSet());
+        replyList.forEach(reply -> {
+            userIdSet.add(reply.getUserId());
+            commentIdSet.add(reply.getId());
+        });
         // 添加一级评论用户id
-        userIdList.add(comment.getUserId());
+        userIdSet.add(comment.getUserId());
+        commentIdSet.add(comment.getId());
         // 获取所有用户信息
-        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet);
         // userId -> createUser
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
 
-        return this.CommentToVO(comment, createUserMap);
+        // 获取点赞信息
+        Query query = new Query();
+        query.addCriteria(Criteria.where("commentId").in(commentIdSet));
+        List<CommentThumb> commentThumbs = mongoTemplate.find(query, CommentThumb.class);
+        // 当前用户点在过的评论集合
+        Set<Long> hasThumbCommentSet = commentThumbs.stream()
+                .filter(commentThumb -> commentThumb.getUserIdList().contains(currentUser.getId()))
+                .map(CommentThumb::getCommentId).collect(Collectors.toSet());
+        // commentId -> comment.thumbNum
+        Map<Long, Integer> thumbNumMap = commentThumbs.stream()
+                .collect(Collectors.toMap(
+                        CommentThumb::getCommentId,
+                        commentThumb -> commentThumb.getUserIdList().size())
+                );
+
+        return this.CommentToVO(comment, createUserMap, hasThumbCommentSet, thumbNumMap);
     }
 
     @Override
     public Page<PostCommentVO> pageCommentVO(CommentQueryRequest commentQueryRequest) {
+        // 获取登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        Long userId = currentUser.getId();
+
         Long postId = commentQueryRequest.getPostId();
         // 这里 pageable 页数从 0 开始，所以要 -1
         int current = (int) commentQueryRequest.getCurrent() - 1;
@@ -202,21 +230,38 @@ public class PostCommentServiceImpl implements PostCommentService {
         // 查询评论信息
         List<Comment> commentList = mongoTemplate.find(query, Comment.class);
 
-        Set<Long> userIdList = new HashSet<>();
+        Set<Long> userIdSet = new HashSet<>();
+        Set<Long> commentIdSet = new HashSet<>();
         commentList.forEach(comment -> {
-            userIdList.add(comment.getUserId());
-            Set<Long> replyUserIdList = comment.getReplies().stream()
-                    .map(Comment.ReplyComment::getUserId)
-                    .collect(Collectors.toSet());
-            userIdList.addAll(replyUserIdList);
+            userIdSet.add(comment.getUserId());
+            commentIdSet.add(comment.getId());
+            comment.getReplies().forEach(replyComment -> {
+                commentIdSet.add(replyComment.getId());
+                userIdSet.add(replyComment.getUserId());
+            });
         });
-        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet);
         // userId -> createUser
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
 
+        // 获取点赞信息
+        query = new Query();
+        query.addCriteria(Criteria.where("commentId").in(commentIdSet));
+        List<CommentThumb> commentThumbs = mongoTemplate.find(query, CommentThumb.class);
+        // 当前用户点在过的评论集合
+        Set<Long> hasThumbCommentSet = commentThumbs.stream()
+                .filter(commentThumb -> commentThumb.getUserIdList().contains(userId))
+                .map(CommentThumb::getCommentId).collect(Collectors.toSet());
+        // commentId -> comment.thumbNum
+        Map<Long, Integer> thumbNumMap = commentThumbs.stream()
+                .collect(Collectors.toMap(
+                        CommentThumb::getCommentId,
+                        commentThumb -> commentThumb.getUserIdList().size())
+                );
+
         List<PostCommentVO> commentVOList = commentList.stream()
-                .map(comment -> this.CommentToVO(comment, createUserMap))
+                .map(comment -> this.CommentToVO(comment, createUserMap, hasThumbCommentSet, thumbNumMap))
                 .toList();
 
         Page<PostCommentVO> commentPage = new Page<>(current, pageSize, total);
@@ -225,16 +270,77 @@ public class PostCommentServiceImpl implements PostCommentService {
         return commentPage;
     }
 
-    private PostCommentVO CommentToVO(Comment comment, Map<Long, UserBasicInfoBO> createUserMap) {
+    @Override
+    public int thumbComment(Long firstCommentId, Long secondCommentId) {
+        // 获取当前登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+
+        Comment comment = commentRepository.getCommentById(firstCommentId);
+        ThrowUtils.throwIf(comment == null, ErrorCodeEnum.NOT_FOUND_ERROR, "一级评论不存在！");
+        long commentId = firstCommentId;
+        if (secondCommentId != null) {
+            // 点赞二级评论
+            Optional<Comment.ReplyComment> secondComment = comment.getReplies().stream()
+                    .filter(replyComment -> replyComment.getId().equals(secondCommentId))
+                    .findFirst();
+            if (secondComment.isEmpty() || secondComment.get().isHasDelete()) {
+                throw new BusinessException(ErrorCodeEnum.NOT_FOUND_ERROR, "二级评论不存在！");
+            }
+            commentId = secondCommentId;
+        }
+
+        // 获取点赞信息
+        CommentThumb commentThumb = commentThumbRepository.getCommentThumbByCommentId(commentId);
+        if (commentThumb == null) {
+            // 存入点赞信息
+            commentThumb = new CommentThumb();
+            commentThumb.setCommentId(commentId);
+            Set<Long> userIdSet = new HashSet<>();
+            userIdSet.add(currentUser.getId());
+            commentThumb.setUserIdList(userIdSet);
+            // 保存点赞信息
+            commentThumbRepository.save(commentThumb);
+            return 1;
+        }
+        int hasThumb;
+        Set<Long> userIdList = commentThumb.getUserIdList();
+        if (userIdList.contains(currentUser.getId())) {
+            userIdList.remove(currentUser.getId());
+            hasThumb = -1;
+        } else {
+            userIdList.add(currentUser.getId());
+            hasThumb = 1;
+        }
+
+        commentThumbRepository.save(commentThumb);
+        return hasThumb;
+    }
+
+    private PostCommentVO CommentToVO(Comment comment, Map<Long, UserBasicInfoBO> createUserMap,
+                                      Set<Long> hasThumbCommentSet, Map<Long, Integer> thumbNumMap) {
         // 封装信息
         PostCommentVO postCommentVO = new PostCommentVO();
         BeanUtils.copyProperties(comment, postCommentVO);
         postCommentVO.setCreateUser(createUserMap.get(comment.getUserId()));
+        postCommentVO.setHasThumb(hasThumbCommentSet.contains(comment.getId()));
+        postCommentVO.setThumbNum(thumbNumMap.getOrDefault(comment.getId(), 0));
+        // 封装二级评论
         List<Comment.ReplyComment> replyList = comment.getReplies();
         List<PostCommentVO.ReplyVO> replyVOList = replyList.stream().map(replyComment -> {
+            // 删除评论
+            if (replyComment.isHasDelete()) {
+                PostCommentVO.ReplyVO deleteReplyVO = new PostCommentVO.ReplyVO();
+                deleteReplyVO.setId(replyComment.getId());
+                deleteReplyVO.setContent("评论已被删除");
+                deleteReplyVO.setCreateTime(replyComment.getCreateTime());
+                return deleteReplyVO;
+            }
+            // 正常返回
             PostCommentVO.ReplyVO replyVO = new PostCommentVO.ReplyVO();
             BeanUtils.copyProperties(replyComment, replyVO);
             replyVO.setCreateUser(createUserMap.get(replyComment.getUserId()));
+            replyVO.setHasThumb(hasThumbCommentSet.contains(replyComment.getId()));
+            replyVO.setThumbNum(thumbNumMap.getOrDefault(replyComment.getId(), 0));
             return replyVO;
         }).toList();
 
@@ -242,7 +348,4 @@ public class PostCommentServiceImpl implements PostCommentService {
         return postCommentVO;
     }
 }
-
-
-
 

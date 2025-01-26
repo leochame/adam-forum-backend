@@ -84,16 +84,3 @@ create table if not exists post_favour
     index idx_post_id (post_id),
     index idx_userId (user_id)
 ) comment '帖子收藏表';
-
--- 评论点赞表
-create table if not exists comment_thumb
-(
-    id          bigint auto_increment comment 'id' primary key,
-    comment_id  bigint                             not null comment '评论 id',
-    user_id     bigint                             not null comment '创建用户 id',
-    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_post_id (comment_id),
-    index idx_userId (user_id)
-) comment '评论点赞表' collate = utf8mb4_unicode_ci;
-

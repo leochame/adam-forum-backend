@@ -5,10 +5,10 @@ import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
-import com.adam.post.model.entity.Comment;
 import com.adam.post.model.request.comment.CommentAddRequest;
 import com.adam.post.model.request.comment.CommentDeleteRequest;
 import com.adam.post.model.request.comment.CommentQueryRequest;
+import com.adam.post.model.request.comment.CommentThumbRequest;
 import com.adam.post.model.vo.PostCommentVO;
 import com.adam.post.service.PostCommentService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -107,5 +107,26 @@ public class PostCommentController {
         Page<PostCommentVO> commentPage = postCommentService.pageCommentVO(commentQueryRequest);
 
         return ResultUtils.success(commentPage);
+    }
+
+    /**
+     * 评论点赞
+     *
+     * @param commentThumbRequest 点赞请求
+     * @return 点赞状态
+     */
+    @PostMapping("/thumb")
+    @Operation(summary = "评论点赞")
+    public BaseResponse<Integer> thumbComment(@RequestBody CommentThumbRequest commentThumbRequest) {
+        ThrowUtils.throwIf(commentThumbRequest == null, ErrorCodeEnum.PARAMS_ERROR);
+        Long firstCommentId = commentThumbRequest.getFirstCommentId();
+        Long secondCommentId = commentThumbRequest.getSecondCommentId();
+        if (firstCommentId == null || firstCommentId <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "一级评论 id 错误");
+        }
+
+        int thumbResult = postCommentService.thumbComment(firstCommentId, secondCommentId);
+
+        return ResultUtils.success(thumbResult);
     }
 }

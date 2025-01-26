@@ -45,4 +45,13 @@ public interface PostCommentService {
      * @return 评论信息分页
      */
     Page<PostCommentVO> pageCommentVO(CommentQueryRequest commentQueryRequest);
+
+    /**
+     * 评论点赞
+     *
+     * @param firstCommentId  一级评论 id
+     * @param secondCommentId 二级评论 id
+     * @return 点赞状态
+     */
+    int thumbComment(Long firstCommentId, Long secondCommentId);
 }
