@@ -138,6 +138,7 @@ public class PostCommentServiceImpl implements PostCommentService {
 
         // 删除回复数
         int removeNum = 1;
+        long removeCommentThumbId = firstCommentId;
 
         List<Comment.ReplyComment> replyList = comment.getReplies();
         if (secondCommentId != null) {
@@ -148,6 +149,7 @@ public class PostCommentServiceImpl implements PostCommentService {
                     .orElseThrow(() -> new BusinessException(ErrorCodeEnum.NOT_FOUND_ERROR, "评论不存在，请重试！"));
             reply.setHasDelete(true);
             comment.setReplies(replyList);
+            removeCommentThumbId = secondCommentId;
             commentRepository.save(comment);
         } else {
             // 删除一级评论
@@ -165,6 +167,8 @@ public class PostCommentServiceImpl implements PostCommentService {
                 .eq(Post::getId, comment.getPostId())
                 .setSql("comment_num = comment_num - " + removeNum));
         log.info("用户 {} 删除评论id：{}，帖子：{}，总共删除：{}", userId, comment.getId(), comment.getPostId(), removeNum);
+        // 删除点赞信息
+        commentThumbRepository.deleteById(removeCommentThumbId);
         return removeNum;
     }
 
