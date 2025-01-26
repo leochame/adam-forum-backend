@@ -3,6 +3,7 @@ package com.adam.service.user.service;
 import com.adam.service.user.bo.UserBasicInfoBO;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户基础信息调用 - RPC 接口
@@ -26,5 +27,5 @@ public interface UserBasicRpcService {
      * @param userIdList 用户 id 列表
      * @return 用户基础信息列表
      */
-    List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(List<Long> userIdList);
+    List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(Set<Long> userIdList);
 }

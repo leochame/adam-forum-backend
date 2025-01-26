@@ -1,7 +1,10 @@
 package com.adam.post.service;
 
+import com.adam.post.model.entity.Comment;
 import com.adam.post.model.request.comment.CommentAddRequest;
+import com.adam.post.model.request.comment.CommentQueryRequest;
 import com.adam.post.model.vo.PostCommentVO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * @author chenjiahan
@@ -34,4 +37,12 @@ public interface PostCommentService {
      * @return 评论信息
      */
     PostCommentVO getCommentVOById(Long commentId);
+
+    /**
+     * 分页获取评论信息
+     *
+     * @param commentQueryRequest 查询参数
+     * @return 评论信息分页
+     */
+    Page<PostCommentVO> pageCommentVO(CommentQueryRequest commentQueryRequest);
 }

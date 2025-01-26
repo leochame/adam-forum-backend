@@ -17,15 +17,6 @@ import java.util.List;
 public interface CommentRepository extends MongoRepository<Comment, Long> {
 
     /**
-     * 根据 postId 获取评论信息分页
-     *
-     * @param postId 帖子 id
-     * @return 评论分页
-     */
-    Page<Comment> findByPostId(Long postId, Pageable pageable);
-
-
-    /**
      * 根据 postId 删除评论列表
      *
      * @param postId 帖子 id

@@ -8,19 +8,27 @@ import com.adam.common.core.generator.SnowflakeIdGenerator;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.database.constant.DatabaseConstant;
 import com.adam.post.mapper.PostMapper;
-import com.adam.post.model.entity.Post;
 import com.adam.post.model.entity.Comment;
+import com.adam.post.model.entity.Post;
 import com.adam.post.model.request.comment.CommentAddRequest;
+import com.adam.post.model.request.comment.CommentQueryRequest;
 import com.adam.post.model.vo.PostCommentVO;
+import com.adam.post.model.vo.PostVO;
 import com.adam.post.repository.CommentRepository;
 import com.adam.post.service.PostCommentService;
 import com.adam.service.user.bo.UserBasicInfoBO;
 import com.adam.service.user.service.UserBasicRpcService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,13 +44,15 @@ import java.util.stream.Collectors;
 public class PostCommentServiceImpl implements PostCommentService {
 
     private static final SnowflakeIdGenerator SNOWFLAKE_ID_GENERATOR = SnowflakeIdGenerator.getInstance();
-    ;
 
     @Resource
     private PostMapper postMapper;
 
     @Resource
     private CommentRepository commentRepository;
+
+    @Resource
+    private MongoTemplate mongoTemplate;
 
     @DubboReference
     private UserBasicRpcService userBasicRpcService;
@@ -163,9 +173,9 @@ public class PostCommentServiceImpl implements PostCommentService {
         ThrowUtils.throwIf(comment == null, ErrorCodeEnum.NOT_FOUND_ERROR, "获取评论信息不存在！");
         List<Comment.ReplyComment> replyList = comment.getReplies();
         // 获取所有二级评论用户 id
-        List<Long> userIdList = replyList.stream()
+        Set<Long> userIdList = replyList.stream()
                 .map(Comment.ReplyComment::getUserId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         // 添加一级评论用户id
         userIdList.add(comment.getUserId());
         // 获取所有用户信息
@@ -174,11 +184,54 @@ public class PostCommentServiceImpl implements PostCommentService {
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
 
+        return this.CommentToVO(comment, createUserMap);
+    }
+
+    @Override
+    public Page<PostCommentVO> pageCommentVO(CommentQueryRequest commentQueryRequest) {
+        Long postId = commentQueryRequest.getPostId();
+        // 这里 pageable 页数从 0 开始，所以要 -1
+        int current = (int) commentQueryRequest.getCurrent() - 1;
+        int pageSize = (int) commentQueryRequest.getPageSize();
+        Pageable pageable = PageRequest.of(current, pageSize);
+        Query query = new Query();
+        if (postId != null) {
+            query.addCriteria(Criteria.where("postId").is(postId));
+        }
+        query.with(pageable);
+        long total = mongoTemplate.count(query, Comment.class);
+        // 查询评论信息
+        List<Comment> commentList = mongoTemplate.find(query, Comment.class);
+
+        Set<Long> userIdList = new HashSet<>();
+        commentList.forEach(comment -> {
+            userIdList.add(comment.getUserId());
+            Set<Long> replyUserIdList = comment.getReplies().stream()
+                    .map(Comment.ReplyComment::getUserId)
+                    .collect(Collectors.toSet());
+            userIdList.addAll(replyUserIdList);
+        });
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
+        // userId -> createUser
+        Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
+                .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
+
+        List<PostCommentVO> commentVOList = commentList.stream()
+                .map(comment -> this.CommentToVO(comment, createUserMap))
+                .toList();
+
+        Page<PostCommentVO> commentPage = new Page<>(current, pageSize, total);
+        commentPage.setRecords(commentVOList);
+
+        return commentPage;
+    }
+
+    private PostCommentVO CommentToVO(Comment comment, Map<Long, UserBasicInfoBO> createUserMap) {
         // 封装信息
         PostCommentVO postCommentVO = new PostCommentVO();
         BeanUtils.copyProperties(comment, postCommentVO);
         postCommentVO.setCreateUser(createUserMap.get(comment.getUserId()));
-
+        List<Comment.ReplyComment> replyList = comment.getReplies();
         List<PostCommentVO.ReplyVO> replyVOList = replyList.stream().map(replyComment -> {
             PostCommentVO.ReplyVO replyVO = new PostCommentVO.ReplyVO();
             BeanUtils.copyProperties(replyComment, replyVO);

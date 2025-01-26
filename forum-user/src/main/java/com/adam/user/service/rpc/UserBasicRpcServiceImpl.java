@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户基础信息调用 - RPC 实现
@@ -47,7 +48,7 @@ public class UserBasicRpcServiceImpl implements UserBasicRpcService {
     }
 
     @Override
-    public List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(List<Long> userIdList) {
+    public List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(Set<Long> userIdList) {
         if (CollectionUtils.isEmpty(userIdList)) {
             throw new BusinessRpcException(ErrorCodeEnum.PARAMS_ERROR, "用户 id 列表错误");
         }

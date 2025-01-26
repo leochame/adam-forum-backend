@@ -256,7 +256,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         postPostThumbList.forEach(postPostThumb -> postIdHasThumbMap.put(postPostThumb.getPostId(), true));
 
         // 获取创作用户
-        List<Long> userIdList = postList.stream().map(Post::getUserId).toList();
+        Set<Long> userIdList = postList.stream().map(Post::getUserId).collect(Collectors.toSet());
         List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
         // userId -> userInfo
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()

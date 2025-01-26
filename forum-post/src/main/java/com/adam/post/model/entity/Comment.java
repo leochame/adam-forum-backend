@@ -3,6 +3,7 @@ package com.adam.post.model.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class Comment implements Serializable {
     /**
      * 帖子 id
      */
+    @Indexed
     private Long postId;
 
     /**

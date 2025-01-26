@@ -5,10 +5,13 @@ import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
+import com.adam.post.model.entity.Comment;
 import com.adam.post.model.request.comment.CommentAddRequest;
 import com.adam.post.model.request.comment.CommentDeleteRequest;
+import com.adam.post.model.request.comment.CommentQueryRequest;
 import com.adam.post.model.vo.PostCommentVO;
 import com.adam.post.service.PostCommentService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -30,7 +33,6 @@ public class PostCommentController {
 
     @Resource
     private PostCommentService postCommentService;
-
 
     /**
      * 发布评论接口
@@ -86,5 +88,24 @@ public class PostCommentController {
         PostCommentVO postCommentVO = postCommentService.getCommentVOById(commentId);
 
         return ResultUtils.success(postCommentVO);
+    }
+
+    /**
+     * 分页获取评论信息
+     *
+     * @param commentQueryRequest 查询参数
+     * @return 评论信息分页
+     */
+    @PostMapping("/page/vo")
+    @Operation(summary = "分页获取评论信息")
+    public BaseResponse<Page<PostCommentVO>> pageCommentVO(@RequestBody CommentQueryRequest commentQueryRequest) {
+        long pageSize = commentQueryRequest.getPageSize();
+        if (pageSize > 20) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "获取数量过多，单页数量不能超过 20");
+        }
+
+        Page<PostCommentVO> commentPage = postCommentService.pageCommentVO(commentQueryRequest);
+
+        return ResultUtils.success(commentPage);
     }
 }
