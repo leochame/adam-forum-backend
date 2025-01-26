@@ -13,7 +13,6 @@ import com.adam.post.model.entity.Post;
 import com.adam.post.model.request.comment.CommentAddRequest;
 import com.adam.post.model.request.comment.CommentQueryRequest;
 import com.adam.post.model.vo.PostCommentVO;
-import com.adam.post.model.vo.PostVO;
 import com.adam.post.repository.CommentRepository;
 import com.adam.post.service.PostCommentService;
 import com.adam.service.user.bo.UserBasicInfoBO;
