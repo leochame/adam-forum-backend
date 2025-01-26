@@ -1,11 +1,12 @@
 package com.adam.post.repository;
 
-import com.adam.post.model.mongodb.Comment;
+import com.adam.post.model.entity.Comment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 评论 mongodb 查询类
@@ -16,12 +17,12 @@ import java.util.Optional;
 public interface CommentRepository extends MongoRepository<Comment, Long> {
 
     /**
-     * 根据 postId 获取评论信息
+     * 根据 postId 获取评论信息分页
      *
      * @param postId 帖子 id
-     * @return 评论列表
+     * @return 评论分页
      */
-    List<Comment> findByPostId(Long postId);
+    Page<Comment> findByPostId(Long postId, Pageable pageable);
 
 
     /**

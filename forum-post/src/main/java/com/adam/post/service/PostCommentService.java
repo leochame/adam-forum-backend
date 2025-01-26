@@ -1,6 +1,7 @@
 package com.adam.post.service;
 
 import com.adam.post.model.request.comment.CommentAddRequest;
+import com.adam.post.model.vo.PostCommentVO;
 
 /**
  * @author chenjiahan
@@ -25,4 +26,12 @@ public interface PostCommentService {
      * @return 删除成功
      */
     int deleteComment(Long firstCommentId, Long secondCommentId);
+
+    /**
+     * 根据 id 获取评论信息
+     *
+     * @param commentId 评论 id
+     * @return 评论信息
+     */
+    PostCommentVO getCommentVOById(Long commentId);
 }

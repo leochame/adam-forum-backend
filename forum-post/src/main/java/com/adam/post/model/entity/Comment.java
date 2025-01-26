@@ -1,4 +1,4 @@
-package com.adam.post.model.mongodb;
+package com.adam.post.model.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

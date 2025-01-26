@@ -7,16 +7,14 @@ import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
 import com.adam.post.model.request.comment.CommentAddRequest;
 import com.adam.post.model.request.comment.CommentDeleteRequest;
+import com.adam.post.model.vo.PostCommentVO;
 import com.adam.post.service.PostCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 帖子评论相关接口
@@ -32,6 +30,7 @@ public class PostCommentController {
 
     @Resource
     private PostCommentService postCommentService;
+
 
     /**
      * 发布评论接口
@@ -69,5 +68,23 @@ public class PostCommentController {
         int removeNum = postCommentService.deleteComment(firstCommentId, commentDeleteRequest.getSecondCommentId());
 
         return ResultUtils.success(removeNum);
+    }
+
+    /**
+     * 根据 id 获取评论信息
+     *
+     * @param commentId 评论 id
+     * @return 评论信息
+     */
+    @GetMapping("/get/vo/{commentId}")
+    @Operation(summary = "根据 id 获取评论信息")
+    public BaseResponse<PostCommentVO> getPostVO(@PathVariable("commentId") Long commentId) {
+        if (commentId == null || commentId <= 0) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "评论 id 错误！");
+        }
+
+        PostCommentVO postCommentVO = postCommentService.getCommentVOById(commentId);
+
+        return ResultUtils.success(postCommentVO);
     }
 }

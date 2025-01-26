@@ -9,19 +9,22 @@ import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.database.constant.DatabaseConstant;
 import com.adam.post.mapper.PostMapper;
 import com.adam.post.model.entity.Post;
-import com.adam.post.model.mongodb.Comment;
+import com.adam.post.model.entity.Comment;
 import com.adam.post.model.request.comment.CommentAddRequest;
+import com.adam.post.model.vo.PostCommentVO;
 import com.adam.post.repository.CommentRepository;
 import com.adam.post.service.PostCommentService;
+import com.adam.service.user.bo.UserBasicInfoBO;
+import com.adam.service.user.service.UserBasicRpcService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author chenjiahan
@@ -40,6 +43,9 @@ public class PostCommentServiceImpl implements PostCommentService {
 
     @Resource
     private CommentRepository commentRepository;
+
+    @DubboReference
+    private UserBasicRpcService userBasicRpcService;
 
     @Override
     public Long addComment(CommentAddRequest commentAddRequest) {
@@ -147,6 +153,41 @@ public class PostCommentServiceImpl implements PostCommentService {
                 .setSql("comment_num = comment_num - " + removeNum));
         log.info("用户 {} 删除评论id：{}，帖子：{}，总共删除：{}", userId, comment.getId(), comment.getPostId(), removeNum);
         return removeNum;
+    }
+
+    @Override
+    public PostCommentVO getCommentVOById(Long commentId) {
+        // 当前登录用户
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+        Comment comment = commentRepository.getCommentById(commentId);
+        ThrowUtils.throwIf(comment == null, ErrorCodeEnum.NOT_FOUND_ERROR, "获取评论信息不存在！");
+        List<Comment.ReplyComment> replyList = comment.getReplies();
+        // 获取所有二级评论用户 id
+        List<Long> userIdList = replyList.stream()
+                .map(Comment.ReplyComment::getUserId)
+                .collect(Collectors.toList());
+        // 添加一级评论用户id
+        userIdList.add(comment.getUserId());
+        // 获取所有用户信息
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
+        // userId -> createUser
+        Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
+                .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
+
+        // 封装信息
+        PostCommentVO postCommentVO = new PostCommentVO();
+        BeanUtils.copyProperties(comment, postCommentVO);
+        postCommentVO.setCreateUser(createUserMap.get(comment.getUserId()));
+
+        List<PostCommentVO.ReplyVO> replyVOList = replyList.stream().map(replyComment -> {
+            PostCommentVO.ReplyVO replyVO = new PostCommentVO.ReplyVO();
+            BeanUtils.copyProperties(replyComment, replyVO);
+            replyVO.setCreateUser(createUserMap.get(replyComment.getUserId()));
+            return replyVO;
+        }).toList();
+
+        postCommentVO.setReplyList(replyVOList);
+        return postCommentVO;
     }
 }
 
