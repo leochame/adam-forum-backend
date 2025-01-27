@@ -1,0 +1,33 @@
+server:
+  port: 50201
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: forum-user-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]': # 匹配所有请求
+            allowedOrigins: "*" #跨域处理 允许所有的域
+            allowedMethods: # 支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        # 用户管理
+        - id: user
+          uri: http://localhost:8010
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix= 1
+        # 权限管理
+        - id: auth
+          uri: http://localhost:8000
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix= 1
