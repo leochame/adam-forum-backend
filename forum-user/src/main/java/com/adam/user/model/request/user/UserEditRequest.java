@@ -1,4 +1,4 @@
-package com.adam.user.model.dto.user;
+package com.adam.user.model.request.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;

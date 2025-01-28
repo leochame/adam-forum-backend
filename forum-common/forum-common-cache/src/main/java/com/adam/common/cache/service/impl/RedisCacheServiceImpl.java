@@ -8,13 +8,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="https://github.com/IceProgramer">chenjiahan</a>
@@ -101,7 +103,7 @@ public class RedisCacheServiceImpl implements RedisCacheService {
     }
 
     @Override
-    public long incrLongValue(String key, long delta) {
+    public long incrLongValue(String key, long delta, long expireTime, TimeUnit timeUnit) {
         if (StringUtils.isEmpty(key)) {
             throw new BusinessException(ErrorCodeEnum.CACHE_KEY_EMPTY_ERROR);
         }
@@ -110,6 +112,7 @@ public class RedisCacheServiceImpl implements RedisCacheService {
         }
         try {
             Long value = stringRedisTemplate.opsForValue().increment(key, delta);
+            stringRedisTemplate.expire(key, expireTime, timeUnit);
             return (value != null) ? value : 0L;
         } catch (Exception e) {
             log.error("Redis incr key: {}, delta: {} value error: {}", key, delta, e.getMessage());
@@ -187,6 +190,65 @@ public class RedisCacheServiceImpl implements RedisCacheService {
             log.error("Redis get Object List key: {} value error: {}", key, e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public void addLongValueInSet(String key, Long value, Long expireTime, TimeUnit timeUnit) {
+        this.addLongSet(key, Collections.singleton(value), expireTime, timeUnit);
+    }
+
+    @Override
+    public void addLongSet(String key, Set<Long> values, Long expireTime, TimeUnit timeUnit) {
+        if (StringUtils.isEmpty(key)) {
+            throw new BusinessException(ErrorCodeEnum.CACHE_KEY_EMPTY_ERROR);
+        }
+        if (CollectionUtils.isEmpty(values)) {
+            return;
+        }
+        try {
+            // 判断是否为 空值
+            stringRedisTemplate.opsForSet().remove(key, String.valueOf(CacheConstant.SET_EMPTY_VALUE));
+            stringRedisTemplate.opsForSet().add(key,
+                    values.stream().map(String::valueOf).distinct().toArray(String[]::new));
+            stringRedisTemplate.expire(key, expireTime, timeUnit);
+            log.info("Successfully add {} to {} set, expireTime: {} ({})", GSON.toJson(values), key, expireTime, timeUnit.name());
+        } catch (Exception e) {
+            log.error("Redis add value {} to {} set error: {}", GSON.toJson(values), key, e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<Long> getLongSet(String key) {
+        if (StringUtils.isEmpty(key)) {
+            throw new BusinessException(ErrorCodeEnum.CACHE_KEY_EMPTY_ERROR);
+        }
+        try {
+            Set<String> stringSet = stringRedisTemplate.opsForSet().members(key);
+            // 如果集合为空或不存在，直接返回 null
+            if (CollectionUtils.isEmpty(stringSet)) {
+                return null;
+            }
+            // 转换成 Long Set
+            return stringSet.stream()
+                    .map(Long::parseLong)
+                    .collect(Collectors.toSet());
+        } catch (Exception e) {
+            log.error("Redis get Set key: {} value error: {}", key, e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void removeLongValueFromSet(String key, Long value) {
+        if (StringUtils.isEmpty(key)) {
+            throw new BusinessException(ErrorCodeEnum.CACHE_KEY_EMPTY_ERROR);
+        }
+        try {
+            stringRedisTemplate.opsForSet().remove(key, value.toString());
+            log.info("Successfully remove {} value from set {}", value, key);
+        } catch (Exception e) {
+            log.error("Error remove {} Redis Key, error: {}", key, e.getMessage());
+        }
     }
 }
 

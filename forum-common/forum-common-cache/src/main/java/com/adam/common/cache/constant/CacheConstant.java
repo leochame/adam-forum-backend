@@ -14,6 +14,21 @@ public interface CacheConstant extends AuthCacheConstant, UserCacheConstant, Pos
     String UNION = ":";
 
     /**
+     * 限流
+     */
+    String LIMIT = "limit:";
+
+    /**
+     * 空值
+     */
+    String STRING_EMPTY_VALUE = "EMPTY";
+
+    /**
+     * set 空值（防止缓存穿透）
+     */
+    Long SET_EMPTY_VALUE = 0L;
+
+    /**
      * 一个月过期时间
      */
     long MONTH_EXPIRE_TIME = 3600 * 24 * 30;

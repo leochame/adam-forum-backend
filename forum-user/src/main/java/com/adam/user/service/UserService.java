@@ -1,8 +1,13 @@
 package com.adam.user.service;
 
-import com.adam.user.model.dto.user.UserEditRequest;
+import com.adam.service.user.bo.UserBasicInfoBO;
+import com.adam.user.model.request.user.UserEditRequest;
 import com.adam.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author iceman
@@ -28,4 +33,12 @@ public interface UserService extends IService<User> {
      * @return 编辑成功
      */
     boolean editUser(UserEditRequest userEditRequest);
+
+    /**
+     * 获取用户基础信息列表
+     *
+     * @param userIdList 用户 id
+     * @return 用户基础信息列表
+     */
+    List<UserBasicInfoBO> getUserBasicList(Collection<Long> userIdList);
 }
