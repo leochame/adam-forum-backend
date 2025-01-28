@@ -1,6 +1,7 @@
 package com.adam.common.cache.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -98,7 +99,7 @@ public interface RedisCacheService {
      * @param delta 递增值
      * @return 缓存值
      */
-    long incrLongValue(String key, long delta);
+    long incrLongValue(String key, long delta, long expireTime, TimeUnit timeUnit);
 
     /**
      * 减少 long 缓存值
@@ -144,4 +145,39 @@ public interface RedisCacheService {
      */
     <T> List<T> getObjectList(String key, Class<T> valueClass);
 
+    /**
+     * 添加 long 类型值到 set 列表中
+     *
+     * @param key        缓存键
+     * @param value      缓存 long 值
+     * @param expireTime 过期时间
+     * @param timeUnit   时间单位
+     */
+    void addLongValueInSet(String key, Long value, Long expireTime, TimeUnit timeUnit);
+
+    /**
+     * 添加 long 集合到 set 列表中
+     *
+     * @param key        缓存键
+     * @param values      缓存 long 值
+     * @param expireTime 过期时间
+     * @param timeUnit   时间单位
+     */
+    void addLongSet(String key, Set<Long> values, Long expireTime, TimeUnit timeUnit);
+
+    /**
+     * 获取 long 集合从列表中
+     *
+     * @param key 缓存键
+     * @return long 集合
+     */
+    Set<Long> getLongSet(String key);
+
+    /**
+     * 从 set 列表移除 long 类型值
+     *
+     * @param key   缓存键
+     * @param value 移除值
+     */
+    void removeLongValueFromSet(String key, Long value);
 }

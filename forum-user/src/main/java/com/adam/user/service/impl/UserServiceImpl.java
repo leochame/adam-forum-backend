@@ -10,6 +10,7 @@ import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.utils.RandomAvatarUtil;
 import com.adam.common.database.constant.DatabaseConstant;
+import com.adam.service.user.bo.UserBasicInfoBO;
 import com.adam.user.model.request.user.UserEditRequest;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,8 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author iceman
@@ -89,6 +95,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         ThrowUtils.throwIf(!result, ErrorCodeEnum.OPERATION_ERROR, "编辑自己信息失败，请重试！");
         log.info("成功更新用户信息 {}", userEditRequest);
         return true;
+    }
+
+    @Override
+    public List<UserBasicInfoBO> getUserBasicList(Collection<Long> userIdList) {
+        if (CollectionUtils.isEmpty(userIdList)) {
+            return List.of();
+        }
+        List<User> userList = baseMapper.selectList(Wrappers.<User>lambdaQuery()
+                .in(User::getId, userIdList)
+                .select(User::getId, User::getUsername, User::getGender, User::getUserAvatar, User::getUserRole));
+        return userList.stream().map(user -> {
+            UserBasicInfoBO userBasicInfoBO = new UserBasicInfoBO();
+            BeanUtils.copyProperties(user, userBasicInfoBO);
+            return userBasicInfoBO;
+        }).toList();
     }
 }
 
