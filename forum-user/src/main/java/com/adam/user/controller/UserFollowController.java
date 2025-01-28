@@ -63,6 +63,7 @@ public class UserFollowController {
     @GetMapping("/list/followed/{type}")
     @Operation(summary = "获取关注 / 粉丝列表")
     public BaseResponse<List<UserBasicInfoBO>> listFollowed(@PathVariable("type") FollowEnum followEnum) {
+        log.info("debug");
         List<UserBasicInfoBO> userBasicInfoBOList = userFollowService.listFollow(followEnum);
         return ResultUtils.success(userBasicInfoBOList);
     }

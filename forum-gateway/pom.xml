@@ -6,7 +6,7 @@
     <groupId>com.adam</groupId>
     <artifactId>adam-forum</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../adam-forum/pom.xml</relativePath>
+    <relativePath>../adam-forum</relativePath>
   </parent>
 
   <artifactId>forum-gateway</artifactId>

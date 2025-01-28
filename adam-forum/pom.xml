@@ -110,6 +110,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Nacos 服务发现 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>

@@ -7,6 +7,9 @@ spring:
     name: forum-user-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       globalcors:
         cors-configurations:
           '[/**]': # 匹配所有请求
@@ -18,16 +21,19 @@ spring:
               - DELETE
       routes:
         # 用户管理
-        - id: user
-          uri: http://localhost:8010
+        - id: forum-user-service
+          uri: http://localhost:8010/forum-user
           predicates:
-            - Path=/user/**
-          filters:
-            - StripPrefix= 1
+            - Path=/forum-user/**
+
         # 权限管理
-        - id: auth
-          uri: http://localhost:8000
+        - id: forum-auth-service
+          uri: http://localhost:8000/forum-auth
           predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix= 1
+            - Path=/forum-auth/**
+
+        # 帖子管理
+        - id: forum-post-service
+          uri: http://localhost:8020/forum-auth
+          predicates:
+            - Path=/forum-post/**
