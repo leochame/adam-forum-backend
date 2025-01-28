@@ -37,3 +37,32 @@ spring:
           uri: http://localhost:8020/forum-auth
           predicates:
             - Path=/forum-post/**
+
+
+# 全局接口文档设置
+knife4j:
+  # 聚合swagger文档
+  gateway:
+    enabled: true
+    # 排序规则(tag/operation排序自4.2.0版本新增)
+    # 取值：alpha-默认排序规则，官方swagger-ui默认实现,order-Knife4j提供的增强排序规则，开发者可扩展x-order，根据数值来自定义排序
+    tags-sorter: order
+    operations-sorter: order
+    # 指定手动配置的模式(默认为该模式)
+    strategy: manual
+    routes:
+      - name: 授权服务
+        # 真实子服务访问url地址-提供OpenAPI的文档
+        url: /forum-auth/v3/api-docs?group=default
+        service-name: forum-auth
+        order: 1
+      - name: 用户服务
+        # 真实子服务访问url地址-提供OpenAPI的文档
+        url: /forum-user/v3/api-docs?group=default
+        service-name: forum-user
+        order: 2
+      - name: 帖子服务
+        # 真实子服务访问url地址-提供OpenAPI的文档
+        url: /forum-post/v3/api-docs?group=default
+        service-name: forum-post
+        order: 3
