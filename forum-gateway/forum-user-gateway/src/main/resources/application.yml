@@ -55,14 +55,17 @@ knife4j:
         # 真实子服务访问url地址-提供OpenAPI的文档
         url: /forum-auth/v3/api-docs?group=default
         service-name: forum-auth
+        context-path: /forum-auth
         order: 1
       - name: 用户服务
         # 真实子服务访问url地址-提供OpenAPI的文档
         url: /forum-user/v3/api-docs?group=default
         service-name: forum-user
+        context-path: /forum-user
         order: 2
       - name: 帖子服务
         # 真实子服务访问url地址-提供OpenAPI的文档
         url: /forum-post/v3/api-docs?group=default
         service-name: forum-post
+        context-path: /forum-post
         order: 3
