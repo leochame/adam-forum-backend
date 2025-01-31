@@ -1,10 +1,13 @@
 package com.adam.user.controller;
 
+import com.adam.common.auth.security.SecurityContext;
 import com.adam.common.core.constant.ErrorCodeEnum;
 import com.adam.common.core.exception.BusinessException;
 import com.adam.common.core.exception.ThrowUtils;
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.common.core.response.BaseResponse;
 import com.adam.common.core.response.ResultUtils;
+import com.adam.user.model.entity.User;
 import com.adam.user.model.request.user.UserAccountRegisterRequest;
 import com.adam.user.model.request.user.UserEditRequest;
 import com.adam.user.service.UserService;
@@ -14,10 +17,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户相关接口
@@ -72,5 +72,18 @@ public class UserController {
         boolean result = userService.editUser(userEditRequest);
 
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 获取当前登录用户
+     *
+     * @return 当前登录用户
+     */
+    @GetMapping("/current/info")
+    @Operation(summary = "获取当前登录用户")
+    public BaseResponse<UserBasicInfoVO> getLoginUser() {
+        UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
+
+        return ResultUtils.success(currentUser);
     }
 }
