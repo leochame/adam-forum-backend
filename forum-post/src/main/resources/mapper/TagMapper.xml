@@ -21,8 +21,8 @@
     <select id="selectTagVOListByPostId" parameterType="Long" resultType="com.adam.post.model.vo.PostTagVO">
         SELECT t.id      AS id,
                t.user_id AS userId,
-               t.name    AS name
-            pt.name AS postId
+               t.name    AS name,
+            pt.post_id AS postId
         FROM tag t INNER JOIN post_tag pt ON t.id = pt.tag_id
         WHERE pt.post_id = #{postId}
     </select>

@@ -41,6 +41,11 @@ public class Comment implements Serializable {
     private String content;
 
     /**
+     * 评论图片
+     */
+    private String image;
+
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -73,6 +78,11 @@ public class Comment implements Serializable {
          * 回复内容
          */
         private String content;
+
+        /**
+         * 评论图片
+         */
+        private String image;
 
         /**
          * 创建时间

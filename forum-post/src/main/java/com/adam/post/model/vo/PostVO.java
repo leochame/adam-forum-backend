@@ -93,12 +93,6 @@ public class PostVO implements Serializable {
     @Schema(description = "用户是否点赞", defaultValue = "false")
     private Boolean hasThumb = false;
 
-    /**
-     * 评论列表
-     */
-    @Schema(description = "评论列表")
-    private List<PostCommentVO> commentList;
-
     @Serial
     private static final long serialVersionUID = 90132243746206497L;
 }

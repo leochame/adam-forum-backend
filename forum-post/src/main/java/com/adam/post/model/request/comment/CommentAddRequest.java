@@ -26,6 +26,7 @@ public class CommentAddRequest implements Serializable {
     /**
      * 一级评论 id，为 Null 则为一级评论
      */
+    @Schema(description = "一级评论 id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long commentId;
 
     /**
@@ -40,6 +41,12 @@ public class CommentAddRequest implements Serializable {
     @Schema(description = "评论内容", requiredMode = Schema.RequiredMode.REQUIRED)
     @Size(max = 200, message = "内容不能超过200字！")
     private String content;
+
+    /**
+     * 评论图片
+     */
+    @Schema(description = "评论图片", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String image;
 
     @Serial
     private static final long serialVersionUID = 1L;

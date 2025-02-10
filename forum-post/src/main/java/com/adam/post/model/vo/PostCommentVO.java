@@ -2,7 +2,6 @@ package com.adam.post.model.vo;
 
 import com.adam.service.user.bo.UserBasicInfoBO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +37,9 @@ public class PostCommentVO implements Serializable {
      */
     @Schema(description = "评论内容")
     private String content;
+
+    @Schema(description = "评论图片")
+    private String image;
 
     /**
      * 点赞数
@@ -90,6 +92,9 @@ public class PostCommentVO implements Serializable {
          */
         @Schema(description = "评论内容")
         private String content;
+
+        @Schema(description = "评论图片")
+        private String image;
 
         /**
          * 点赞数

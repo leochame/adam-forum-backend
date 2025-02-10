@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,7 +66,8 @@ public class PostCommentServiceImpl implements PostCommentService {
     @Override
     public Long addComment(CommentAddRequest commentAddRequest) {
         String content = commentAddRequest.getContent();
-        ThrowUtils.throwIf(content == null, ErrorCodeEnum.PARAMS_ERROR, "评论内容不能为空");
+        String image = commentAddRequest.getImage();
+        ThrowUtils.throwIf(StringUtils.isAllBlank(content, image), ErrorCodeEnum.PARAMS_ERROR, "评论不能为空");
         // 获取当前登录用户
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
 
@@ -86,6 +89,7 @@ public class PostCommentServiceImpl implements PostCommentService {
             comment.setPostId(commentAddRequest.getPostId());
             comment.setUserId(currentUser.getId());
             comment.setContent(content);
+            comment.setImage(image);
             comment.setCreateTime(new Date());
             comment.setReplies(Collections.emptyList());
             commentRepository.save(comment);
@@ -108,6 +112,7 @@ public class PostCommentServiceImpl implements PostCommentService {
             replyComment.setUserId(currentUser.getId());
             replyComment.setReplyId(replyId);
             replyComment.setContent(content);
+            replyComment.setImage(image);
             replyComment.setCreateTime(new Date());
             replyComment.setHasDelete(false);
             returnId = replyComment.getId();
@@ -233,6 +238,9 @@ public class PostCommentServiceImpl implements PostCommentService {
         long total = mongoTemplate.count(query, Comment.class);
         // 查询评论信息
         List<Comment> commentList = mongoTemplate.find(query, Comment.class);
+        if (CollectionUtils.isEmpty(commentList)) {
+            return new Page<>(current, pageSize, total);
+        }
 
         Set<Long> userIdSet = new HashSet<>();
         Set<Long> commentIdSet = new HashSet<>();

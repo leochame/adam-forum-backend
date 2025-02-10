@@ -208,7 +208,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         boolean hasFavour = postFavourMapper.exists(Wrappers.<PostFavour>lambdaQuery()
                 .eq(PostFavour::getPostId, postId)
                 .eq(PostFavour::getUserId, userId));
-        postVO.setHasFavour(hasThumb);
+        postVO.setHasFavour(hasFavour);
 
         return postVO;
     }
