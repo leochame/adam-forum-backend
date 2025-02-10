@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -92,6 +93,12 @@ public class PostVO implements Serializable {
      */
     @Schema(description = "用户是否点赞", defaultValue = "false")
     private Boolean hasThumb = false;
+
+    /**
+     * 创建时间
+     */
+    @Schema(description = "创建时间")
+    private Date createTime;
 
     @Serial
     private static final long serialVersionUID = 90132243746206497L;
