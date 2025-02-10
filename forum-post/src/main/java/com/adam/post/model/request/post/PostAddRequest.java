@@ -51,6 +51,11 @@ public class PostAddRequest implements Serializable {
     @Size(max = 9, message = "帖子最多关联 9 张图片")
     private List<String> imageList;
 
+    /**
+     * 封面图片序列
+     */
+    @Schema(description = "封面图片序列", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "1")
+    private int coverIndex = 1;
 
     @Serial
     private static final long serialVersionUID = -5786828601757626069L;

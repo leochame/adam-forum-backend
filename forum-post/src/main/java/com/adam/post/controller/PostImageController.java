@@ -54,7 +54,8 @@ public class PostImageController {
         // 获取当前登录用户
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
 
-        boolean result = postImageService.updatePostImages(postId, postImageUpdateRequest.getImageList(), currentUser.getId());
+        boolean result =
+                postImageService.updatePostImages(postId, postImageUpdateRequest.getImageList(), currentUser.getId(), postImageUpdateRequest.getCoverIndex());
 
         return ResultUtils.success(result);
     }

@@ -72,6 +72,9 @@ public class PostVO implements Serializable {
     @Schema(description = "图片列表")
     private List<String> imageList;
 
+    @Schema(description = "帖子封面图片")
+    private Integer coverIndex;
+
     /**
      * 用户信息
      */

@@ -29,6 +29,12 @@ public class PostImageUpdateRequest implements Serializable {
     @Schema(description = "图片列表", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<String> imageList;
 
+    /**
+     * 封面图片序列
+     */
+    @Schema(description = "封面图片序列", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "1")
+    private int coverIndex = 1;
+
     @Serial
     private static final long serialVersionUID = 8828236698948741357L;
 }

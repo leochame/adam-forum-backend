@@ -33,6 +33,7 @@ create table if not exists post_image
     user_id     bigint                             not null comment '创建用户',
     post_id     bigint                             not null comment '帖子id',
     image       varchar(256)                       not null comment '图片',
+    is_cover    tinyint  default 0                 not null comment '是否为封面',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_user_id (user_id),

@@ -16,10 +16,11 @@ public interface PostImageService extends IService<PostImage> {
     /**
      * 添加帖子图片（内部使用）
      *
-     * @param postId    帖子 id
-     * @param imageList 图片列表
+     * @param postId     帖子 id
+     * @param imageList  图片列表
+     * @param coverIndex 帖子图片封面
      */
-    void addPostImage(Long postId, List<String> imageList);
+    void addPostImage(Long postId, List<String> imageList, int coverIndex);
 
     /**
      * 更新帖子图片
@@ -27,8 +28,9 @@ public interface PostImageService extends IService<PostImage> {
      * @param postId        帖子 id
      * @param imageList     图片列表
      * @param currentUserId 当前登录用户 id
+     * @param coverIndex    帖子图片封面
      * @return 更新成功
      */
     @Transactional(rollbackFor = Exception.class)
-    boolean updatePostImages(Long postId, List<String> imageList, Long currentUserId);
+    boolean updatePostImages(Long postId, List<String> imageList, Long currentUserId, int coverIndex);
 }

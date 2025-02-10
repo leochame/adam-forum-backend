@@ -34,6 +34,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -41,6 +42,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author chenjiahan
@@ -90,7 +92,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         // 保存图片信息
         List<String> imageList = postAddRequest.getImageList();
         if (!CollectionUtils.isEmpty(imageList)) {
-            postImageService.addPostImage(post.getId(), imageList);
+            postImageService.addPostImage(post.getId(), imageList, postAddRequest.getCoverIndex());
         }
 
         // 保存标签信息
@@ -177,8 +179,15 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         // 获取图片
         List<PostImage> postImageList = postImageService.list(Wrappers.<PostImage>lambdaQuery()
                 .eq(PostImage::getPostId, postId)
-                .select(PostImage::getImage));
-        List<String> imageList = postImageList.stream().map(PostImage::getImage).toList();
+                .select(PostImage::getImage, PostImage::getIsCover));
+        List<String> imageList = new ArrayList<>();
+        for (int index = 0; index < postImageList.size(); index++) {
+            PostImage postImage = postImageList.get(index);
+            imageList.add(postImage.getImage());
+            if (postImage.getIsCover() == 1) {
+                postVO.setCoverIndex(index + 1);
+            }
+        }
         postVO.setImageList(imageList);
 
         // 获取标签
@@ -222,12 +231,23 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         // 获取所有图片信息
         List<PostImage> postImageList = postImageService.list(Wrappers.<PostImage>lambdaQuery()
                 .in(PostImage::getPostId, postIdSet)
-                .select(PostImage::getImage, PostImage::getPostId));
-        // postId -> imageList Map
-        Map<Long, List<String>> postImageMap = postImageList.stream()
+                .select(PostImage::getImage, PostImage::getPostId, PostImage::getIsCover));
+        // postId -> imageList, coverIndex
+        Map<Long, Pair<List<String>, Integer>> postImageMap = postImageList.stream()
                 .collect(Collectors.groupingBy(
                         PostImage::getPostId,
-                        Collectors.mapping(PostImage::getImage, Collectors.toList())
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                postImages -> {
+                                    List<String> imageList = postImages.stream().map(PostImage::getImage).toList();
+                                    int coverIndex = IntStream.range(0, postImages.size())
+                                            .filter(i -> postImages.get(i).getIsCover() == 1) // 找到 isCover 为 1 的图片
+                                            .findFirst() // 获取第一个封面图片的索引
+                                            .orElse(0) + 1;
+
+                                    return Pair.of(imageList, coverIndex);
+                                }
+                        )
                 ));
 
         // 获取所有标签列表
@@ -266,7 +286,14 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             PostVO postVO = new PostVO();
             BeanUtils.copyProperties(post, postVO);
             // 设置图片列表
-            postVO.setImageList(postImageMap.getOrDefault(post.getId(), Collections.emptyList()));
+            Pair<List<String>, Integer> postPair = postImageMap.get(post.getId());
+            if (ObjectUtils.isNotEmpty(postPair)) {
+                postVO.setImageList(postPair.getFirst());
+                postVO.setCoverIndex(postPair.getSecond());
+            } else {
+                postVO.setImageList(Collections.emptyList());
+                postVO.setCoverIndex(1);
+            }
             // 设置帖子标签
             postVO.setTagList(postTagListMap.getOrDefault(post.getId(), Collections.emptyList()));
             // 设置点赞

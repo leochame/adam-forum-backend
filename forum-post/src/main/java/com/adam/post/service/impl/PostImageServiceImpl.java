@@ -36,7 +36,7 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
     private PostMapper postMapper;
 
     @Override
-    public void addPostImage(Long postId, List<String> imageList) {
+    public void addPostImage(Long postId, List<String> imageList, int coverIndex) {
         if (CollectionUtils.isEmpty(imageList)) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "图片为空！");
         }
@@ -49,25 +49,30 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
             throw new BusinessException(ErrorCodeEnum.OPERATION_ERROR, "帖子最多关联 9 张图片");
         }
 
+        if (coverIndex > imageList.size() || coverIndex <= 0) {
+            throw new BusinessException(ErrorCodeEnum.OPERATION_ERROR, "选择帖子封面错误");
+        }
+
         // 保存图片
-        Set<PostImage> postImages = imageList.stream().map(image -> {
+        Set<PostImage> postImages = new HashSet<>();
+        for (int index = 0; index < imageList.size(); index++) {
             PostImage postImage = new PostImage();
             postImage.setUserId(currentUser.getId());
             postImage.setPostId(postId);
-            postImage.setImage(image);
-            return postImage;
-        }).collect(Collectors.toSet());
+            postImage.setImage(imageList.get(index));
+            postImage.setIsCover(coverIndex == index + 1 ? 1 : 0);
+            postImages.add(postImage);
+        }
 
         // 保存数据库
         baseMapper.insert(postImages);
 
-        log.info("新增 {} 张图片，帖子 id {}", imageList.size(), postId);
-
+        log.info("新增 {} 张图片，帖子 id {}，封面为第 {} 张图片", imageList.size(), postId, coverIndex);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updatePostImages(Long postId, List<String> imageList, Long currentUserId) {
+    public boolean updatePostImages(Long postId, List<String> imageList, Long currentUserId, int coverIndex) {
         // 查询原帖信息
         Post post = postMapper.selectOne(Wrappers.<Post>lambdaQuery()
                 .eq(Post::getId, postId)
@@ -80,7 +85,6 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
             throw new BusinessException(ErrorCodeEnum.OPERATION_ERROR, "操作失败，仅帖子发布者可更新图片！");
         }
 
-
         // 删除原有图片
         int deleteNum = baseMapper.delete(Wrappers.<PostImage>lambdaQuery()
                 .eq(PostImage::getPostId, postId));
@@ -88,7 +92,7 @@ public class PostImageServiceImpl extends ServiceImpl<PostImageMapper, PostImage
 
         // 更新图片信息
         if (!CollectionUtils.isEmpty(imageList)) {
-            this.addPostImage(postId, imageList);
+            this.addPostImage(postId, imageList, coverIndex);
         }
 
         return true;
