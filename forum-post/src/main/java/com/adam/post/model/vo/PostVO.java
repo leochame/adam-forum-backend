@@ -54,6 +54,11 @@ public class PostVO implements Serializable {
     @Schema(description = "收藏数")
     private Integer favourNum;
 
+    /**
+     * 评论数
+     */
+    @Schema(description = "评论数")
+    private Integer commentNum;
 
     /**
      * 关联标签列表

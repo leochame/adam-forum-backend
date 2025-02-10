@@ -206,7 +206,6 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 
     @Override
     public Page<PostVO> pagePostVO(PostQueryRequest postQueryRequest) {
-        QueryWrapper<Post> queryWrapper = getQueryWrapper(postQueryRequest);
         long size = postQueryRequest.getPageSize();
         long current = postQueryRequest.getCurrent();
         UserBasicInfoVO currentUser = SecurityContext.getCurrentUser();
