@@ -31,6 +31,12 @@ public class UserBasicInfoBO implements Serializable {
     private String username;
 
     /**
+     * 用户账号
+     */
+    @Schema(description = "用户账号")
+    private String account;
+
+    /**
      * 性别 0 - 女｜1 - 男
      */
     @Schema(description = "性别")

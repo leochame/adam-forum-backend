@@ -28,6 +28,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author iceman
@@ -39,14 +40,17 @@ import java.util.Set;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
+    private final static String ACCOUNT_REGEX = "^(?![0-9]+$)[a-zA-Z0-9_]+$";
+
     @Override
     public long userRegisterByAccount(String userAccount, String userPassword, String checkPassword) {
         // 校验参数
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "账号密码不能为空！");
         }
-        if (userPassword.length() < 8 || userAccount.length() > 22) {
-            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "密码长度不得小于8位，大于22位");
+        // 校验账号
+        if (!Pattern.matches(ACCOUNT_REGEX, userAccount)) {
+            throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "账号不能是纯数字且不能包含特殊字符！");
         }
         if (!userPassword.equals(checkPassword)) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "确认密码必须和密码相同");
