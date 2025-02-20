@@ -151,9 +151,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
             // 删除帖子标签信息
             postTagMapper.delete(Wrappers.<PostTag>lambdaQuery()
                     .eq(PostTag::getPostId, postId));
-            return Boolean.TRUE;
 
-            // todo 删除点赞信息
+            // 删除帖子点赞信息
+            postThumbMapper.delete(Wrappers.<PostThumb>lambdaQuery()
+                    .eq(PostThumb::getPostId, postId));
+
+            return Boolean.TRUE;
         });
 
         log.info("删除 帖子「{}」，创建者 「{}」", postId, GSON.toJson(currentUser));
