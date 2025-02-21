@@ -196,7 +196,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         userIdSet.add(comment.getUserId());
         commentIdSet.add(comment.getId());
         // 获取所有用户信息
-        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet);
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet, currentUser);
         // userId -> createUser
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));
@@ -252,7 +252,7 @@ public class PostCommentServiceImpl implements PostCommentService {
                 userIdSet.add(replyComment.getUserId());
             });
         });
-        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet);
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdSet, currentUser);
         // userId -> createUser
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, user -> user));

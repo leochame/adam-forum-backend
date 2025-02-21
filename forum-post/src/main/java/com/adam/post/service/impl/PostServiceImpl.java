@@ -198,7 +198,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         postVO.setTagList(postTagVOList);
 
         // 获取帖子创建者信息
-        UserBasicInfoBO userBasicInfoBO = userBasicRpcService.getUserBasicInfoByUserId(post.getUserId());
+        UserBasicInfoBO userBasicInfoBO = userBasicRpcService.getUserBasicInfoByUserId(post.getUserId(), currentUser);
         postVO.setCreateUser(userBasicInfoBO);
 
         // 判断是否点赞
@@ -279,7 +279,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
 
         // 获取创作用户
         Set<Long> userIdList = postList.stream().map(Post::getUserId).collect(Collectors.toSet());
-        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList);
+        List<UserBasicInfoBO> createUserList = userBasicRpcService.getUserBasicInfoListByUserIdList(userIdList, currentUser);
         // userId -> userInfo
         Map<Long, UserBasicInfoBO> createUserMap = createUserList.stream()
                 .collect(Collectors.toMap(UserBasicInfoBO::getId, userInfo -> userInfo));

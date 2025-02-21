@@ -54,5 +54,9 @@ public class UserBasicInfoBO implements Serializable {
     @Schema(description = "用户身份")
     private String userRole;
 
-
+    /**
+     * 是否关注用户
+     */
+    @Schema(description = "是否关注用户")
+    private Boolean hasFollow;
 }

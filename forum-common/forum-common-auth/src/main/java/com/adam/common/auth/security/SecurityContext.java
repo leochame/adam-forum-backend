@@ -1,5 +1,7 @@
 package com.adam.common.auth.security;
 
+import com.adam.common.core.constant.ErrorCodeEnum;
+import com.adam.common.core.exception.ThrowUtils;
 import com.adam.common.core.model.vo.UserBasicInfoVO;
 
 import java.util.HashMap;

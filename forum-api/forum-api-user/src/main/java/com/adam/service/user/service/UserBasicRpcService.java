@@ -1,5 +1,6 @@
 package com.adam.service.user.service;
 
+import com.adam.common.core.model.vo.UserBasicInfoVO;
 import com.adam.service.user.bo.UserBasicInfoBO;
 
 import java.util.List;
@@ -16,16 +17,18 @@ public interface UserBasicRpcService {
     /**
      * 根据用户 id 获取用户基础信息
      *
-     * @param userId 用户 id
+     * @param userId      用户 id
+     * @param currentUser 当前登录用户
      * @return 用户基础信息
      */
-    UserBasicInfoBO getUserBasicInfoByUserId(Long userId);
+    UserBasicInfoBO getUserBasicInfoByUserId(Long userId, UserBasicInfoVO currentUser);
 
     /**
      * 获取用户基础信息列表
      *
-     * @param userIdList 用户 id 列表
+     * @param userIdList  用户 id 列表
+     * @param currentUser 当前登录用户
      * @return 用户基础信息列表
      */
-    List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(Set<Long> userIdList);
+    List<UserBasicInfoBO> getUserBasicInfoListByUserIdList(Set<Long> userIdList, UserBasicInfoVO currentUser);
 }

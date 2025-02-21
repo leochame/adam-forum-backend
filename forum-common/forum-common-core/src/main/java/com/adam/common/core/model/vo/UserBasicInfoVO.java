@@ -4,6 +4,9 @@ import com.adam.common.core.enums.UserRoleEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 用户
  *
@@ -12,7 +15,7 @@ import lombok.Data;
  */
 @Data
 @Schema(name = "用户基础信息VO", description = "后端传递基础用户信息")
-public class UserBasicInfoVO {
+public class UserBasicInfoVO implements Serializable {
 
     /**
      * id
@@ -46,4 +49,6 @@ public class UserBasicInfoVO {
      */
     private String userRole;
 
+    @Serial
+    private static final long serialVersionUID = -4155475112918047935L;
 }
