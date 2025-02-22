@@ -205,7 +205,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post>
         boolean hasThumb = postThumbMapper.exists(Wrappers.<PostThumb>lambdaQuery()
                 .eq(PostThumb::getPostId, postId)
                 .eq(PostThumb::getUserId, userId));
-        postVO.setHasFavour(hasThumb);
+        postVO.setHasThumb(hasThumb);
 
         // 判断是否收藏
         boolean hasFavour = postFavourMapper.exists(Wrappers.<PostFavour>lambdaQuery()
