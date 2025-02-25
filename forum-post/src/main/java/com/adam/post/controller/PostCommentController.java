@@ -80,7 +80,7 @@ public class PostCommentController {
      */
     @GetMapping("/get/vo/{commentId}")
     @Operation(summary = "根据 id 获取评论信息")
-    public BaseResponse<PostCommentVO> getPostVO(@PathVariable("commentId") Long commentId) {
+    public BaseResponse<PostCommentVO> getPostCommentVO(@PathVariable("commentId") Long commentId) {
         if (commentId == null || commentId <= 0) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "评论 id 错误！");
         }
@@ -98,7 +98,7 @@ public class PostCommentController {
      */
     @PostMapping("/page/vo")
     @Operation(summary = "分页获取评论信息")
-    public BaseResponse<Page<PostCommentVO>> pageCommentVO(@RequestBody CommentQueryRequest commentQueryRequest) {
+    public BaseResponse<Page<PostCommentVO>> pagePostCommentVO(@RequestBody CommentQueryRequest commentQueryRequest) {
         long pageSize = commentQueryRequest.getPageSize();
         if (pageSize > 20) {
             throw new BusinessException(ErrorCodeEnum.PARAMS_ERROR, "获取数量过多，单页数量不能超过 20");
